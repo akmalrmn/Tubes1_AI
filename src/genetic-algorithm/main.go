@@ -48,6 +48,40 @@ func PrintTables(tables [][][]string, view string) {
 	}
 }
 
+// GetTopView returns the top-down view tables (1B to 5B) from the 3D cube
+// It takes the rows from the original cube and rotates them to form the top view.
+func GetTopView(tables [][][]string) [][][]string {
+	topView := make([][][]string, rows)
+	for i := 0; i < rows; i++ {
+		topView[i] = make([][]string, rows)
+		for j := 0; j < rows; j++ {
+			topView[i][j] = make([]string, cols)
+			for k := 0; k < cols; k++ {
+				// Mapping rows from A tables into B tables
+				topView[i][j][k] = tables[rows-1-j][i][k]
+			}
+		}
+	}
+	return topView
+}
+
+// GetSideView returns the side view tables (1C to 5C) from the 3D cube
+// It takes the columns of the original cube and rotates them to form the side view.
+func GetSideView(tables [][][]string) [][][]string {
+	sideView := make([][][]string, rows)
+	for i := 0; i < rows; i++ {
+		sideView[i] = make([][]string, rows)
+		for j := 0; j < rows; j++ {
+			sideView[i][j] = make([]string, cols)
+			for k := 0; k < cols; k++ {
+				// Mapping columns from A tables into C tables
+				sideView[i][j][k] = tables[k][j][i]
+			}
+		}
+	}
+	return sideView
+}
+
 // SumColumns prints the sum of every column from table 1A to 5A
 func SumColumns(tables [][][]string) {
 	fmt.Println("\nColumn Sums:")
@@ -201,6 +235,43 @@ func SumFaceDiagonal(tables [][][]string) {
 	fmt.Printf("Face Diagonal Right (Back to Front): %d\n", sum12)
 }
 
+// SumSpaceDiagonal prints the sum of the space diagonals
+func SumSpaceDiagonal(tables [][][]string) {
+	fmt.Println("\nSpace Diagonal Sums:")
+
+	// Space Diagonal 1
+	sum1 := 0
+	for i := 0; i < numTables; i++ {
+		val, _ := strconv.Atoi(tables[i][i][i]) // row (i) col (i)
+		sum1 += val
+	}
+	fmt.Printf("Space Diagonal 1: %d\n", sum1)
+
+	// Space Diagonal 2
+	sum2 := 0
+	for i := 0; i < numTables; i++ {
+		val, _ := strconv.Atoi(tables[i][i][cols-1-i]) // row (i) col (cols-1-i)
+		sum2 += val
+	}
+	fmt.Printf("Space Diagonal 2: %d\n", sum2)
+
+	// Space Diagonal 3
+	sum3 := 0
+	for i := 0; i < numTables; i++ {
+		val, _ := strconv.Atoi(tables[i][rows-1-i][i]) // row (rows-1-i) col (i)
+		sum3 += val
+	}
+	fmt.Printf("Space Diagonal 3: %d\n", sum3)
+
+	// Space Diagonal 4
+	sum4 := 0
+	for i := 0; i < numTables; i++ {
+		val, _ := strconv.Atoi(tables[i][rows-1-i][cols-1-i]) // row (rows-1-i) col (cols-1)
+		sum4 += val
+	}
+	fmt.Printf("Space Diagonal 4: %d\n", sum4)
+}
+
 func main() {
 	// Seed the random number generator
 	rand.Seed(time.Now().UnixNano())
@@ -215,6 +286,20 @@ func main() {
 	fmt.Println("Front View (Tables 1A to 5A):")
 	PrintTables(tables, "A")
 
+	// // Generate the top-down view tables (1B to 5B)
+	// topViewTables := GetTopView(tables)
+
+	// // Print the top-down view tables (1B to 5B)
+	// fmt.Println("\nTop-Down View (Tables 1B to 5B):")
+	// PrintTables(topViewTables, "B")
+
+	// // Generate the side view tables (1C to 5C)
+	// sideViewTables := GetSideView(tables)
+
+	// // Print the side view tables (1C to 5C)
+	// fmt.Println("\nSide View (Tables 1C to 5C):")
+	// PrintTables(sideViewTables, "C")
+
 	// Sum columns, rows, and poles
 	SumColumns(tables)
 	SumRows(tables)
@@ -222,4 +307,7 @@ func main() {
 
 	// Sum face diagonals
 	SumFaceDiagonal(tables)
+
+	// Sum space diagonals
+	SumSpaceDiagonal(tables)
 }
