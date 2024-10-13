@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -19,7 +20,7 @@ func GenerateTable() [][]string {
 		table[i] = make([]string, cols)
 		for j := range table[i] {
 			// Generate random number for each cell
-			table[i][j] = fmt.Sprintf("%d", rand.Intn(25)+1)
+			table[i][j] = fmt.Sprintf("%d", rand.Intn(5)+1)
 		}
 	}
 	return table
@@ -47,38 +48,50 @@ func PrintTables(tables [][][]string, view string) {
 	}
 }
 
-// GetTopView returns the top-down view tables (1B to 5B) from the 3D cube
-// It takes the rows from the original cube and rotates them to form the top view.
-func GetTopView(tables [][][]string) [][][]string {
-	topView := make([][][]string, rows)
-	for i := 0; i < rows; i++ {
-		topView[i] = make([][]string, rows)
-		for j := 0; j < rows; j++ {
-			topView[i][j] = make([]string, cols)
-			for k := 0; k < cols; k++ {
-				// Mapping rows from A tables into B tables
-				topView[i][j][k] = tables[rows-1-j][i][k]
+// SumColumns prints the sum of every column from table 1A to 5A
+func SumColumns(tables [][][]string) {
+	fmt.Println("\nColumn Sums:")
+	for tableIdx := 0; tableIdx < numTables; tableIdx++ {
+		for col := 0; col < cols; col++ {
+			sum := 0
+			for row := 0; row < rows; row++ {
+				val, _ := strconv.Atoi(tables[tableIdx][row][col])
+				sum += val
 			}
+			fmt.Printf("Col %d (Table %d): %d\n", col+1+(tableIdx*cols), tableIdx+1, sum)
 		}
 	}
-	return topView
 }
 
-// GetSideView returns the side view tables (1C to 5C) from the 3D cube
-// It takes the columns of the original cube and rotates them to form the side view.
-func GetSideView(tables [][][]string) [][][]string {
-	sideView := make([][][]string, rows)
-	for i := 0; i < rows; i++ {
-		sideView[i] = make([][]string, rows)
-		for j := 0; j < rows; j++ {
-			sideView[i][j] = make([]string, cols)
-			for k := 0; k < cols; k++ {
-				// Mapping columns from A tables into C tables
-				sideView[i][j][k] = tables[k][j][i]
+// SumRows prints the sum of every row from table 1A to 5A
+func SumRows(tables [][][]string) {
+	fmt.Println("\nRow Sums:")
+	for tableIdx := 0; tableIdx < numTables; tableIdx++ {
+		for row := 0; row < rows; row++ {
+			sum := 0
+			for col := 0; col < cols; col++ {
+				val, _ := strconv.Atoi(tables[tableIdx][row][col])
+				sum += val
 			}
+			fmt.Printf("Row %d (Table %d): %d\n", row+1+(tableIdx*rows), tableIdx+1, sum)
 		}
 	}
-	return sideView
+}
+
+// SumPoles prints the sum of each pole (1-25)
+func SumPoles(tables [][][]string) {
+	fmt.Println("\nPole Sums:")
+	for pole := 0; pole < rows*cols; pole++ {
+		sum := 0
+		for tableIdx := 0; tableIdx < numTables; tableIdx++ {
+			// Calculate row and column indices for the pole
+			rowIdx := pole / cols
+			colIdx := pole % cols
+			val, _ := strconv.Atoi(tables[tableIdx][rowIdx][colIdx])
+			sum += val
+		}
+		fmt.Printf("Pole %d: %d\n", pole+1, sum)
+	}
 }
 
 func main() {
@@ -95,17 +108,26 @@ func main() {
 	fmt.Println("Front View (Tables 1A to 5A):")
 	PrintTables(tables, "A")
 
-	// Generate the top-down view tables (1B to 5B)
-	topViewTables := GetTopView(tables)
+	// Print the column sums
+	SumColumns(tables)
 
-	// Print the top-down view tables (1B to 5B)
-	fmt.Println("\nTop-Down View (Tables 1B to 5B):")
-	PrintTables(topViewTables, "B")
+	// Print the row sums
+	SumRows(tables)
 
-	// Generate the side view tables (1C to 5C)
-	sideViewTables := GetSideView(tables)
+	// Print the pole sums
+	SumPoles(tables)
 
-	// Print the side view tables (1C to 5C)
-	fmt.Println("\nSide View (Tables 1C to 5C):")
-	PrintTables(sideViewTables, "C")
+	// // Generate the top-down view tables (1B to 5B)
+	// topViewTables := GetTopView(tables)
+
+	// // Print the top-down view tables (1B to 5B)
+	// fmt.Println("\nTop-Down View (Tables 1B to 5B):")
+	// PrintTables(topViewTables, "B")
+
+	// // Generate the side view tables (1C to 5C)
+	// sideViewTables := GetSideView(tables)
+
+	// // Print the side view tables (1C to 5C)
+	// fmt.Println("\nSide View (Tables 1C to 5C):")
+	// PrintTables(sideViewTables, "C")
 }
