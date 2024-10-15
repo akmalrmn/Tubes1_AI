@@ -5,7 +5,7 @@ function AlgorithmSelector() {
     const [result, setResult] = useState(null);
 
     const handleRunAlgorithm = async () => {
-        const initialState = {}; // Define your initial state
+        const initialState = {};
         const populationSize = 100;
         const generations = 50;
         const result = await runGeneticAlgorithm(initialState, populationSize, generations);
