@@ -17,7 +17,7 @@ type Cube struct {
     Tables [][][]string
 }
 
-func GenerateTable() [][]string {
+func generateTable() [][]string {
     table := make([][]string, Rows)
     for i := range table {
         table[i] = make([]string, Cols)
@@ -28,16 +28,16 @@ func GenerateTable() [][]string {
     return table
 }
 
-func GenerateCube() Cube {
+func generateCube() Cube {
     rand.Seed(time.Now().UnixNano())
     tables := make([][][]string, NumTables)
     for i := 0; i < NumTables; i++ {
-        tables[i] = GenerateTable()
+        tables[i] = generateTable()
     }
     return Cube{Tables: tables}
 }
 
-func SumColumns(tables [][][]string) []int {
+func sumColumns(tables [][][]string) []int {
     sums := make([]int, Cols*NumTables)
     for tableIdx := 0; tableIdx < NumTables; tableIdx++ {
         for col := 0; col < Cols; col++ {
@@ -52,7 +52,7 @@ func SumColumns(tables [][][]string) []int {
     return sums
 }
 
-func SumRows(tables [][][]string) []int {
+func sumRows(tables [][][]string) []int {
     sums := make([]int, Rows*NumTables)
     for tableIdx := 0; tableIdx < NumTables; tableIdx++ {
         for row := 0; row < Rows; row++ {
@@ -67,7 +67,7 @@ func SumRows(tables [][][]string) []int {
     return sums
 }
 
-func SumPoles(tables [][][]string) []int {
+func sumPoles(tables [][][]string) []int {
     sums := make([]int, Rows*Cols)
     for pole := 0; pole < Rows*Cols; pole++ {
         sum := 0
@@ -82,9 +82,8 @@ func SumPoles(tables [][][]string) []int {
     return sums
 }
 
-// Add this new function
-func EvaluateIndividual(individual []int) float64 {
-    cube := GenerateCube()
+func evaluateIndividual(individual []int) float64 {
+    cube := generateCube()
     for i, value := range individual {
         tableIdx := i / (Rows * Cols)
         rowIdx := (i % (Rows * Cols)) / Cols
@@ -92,11 +91,11 @@ func EvaluateIndividual(individual []int) float64 {
         cube.Tables[tableIdx][rowIdx][colIdx] = strconv.Itoa(value)
     }
 
-    columnSums := SumColumns(cube.Tables)
-    rowSums := SumRows(cube.Tables)
-    poleSums := SumPoles(cube.Tables)
-    faceDiagonalSums := SumFaceDiagonal(cube.Tables)
-    spaceDiagonalSums := SumSpaceDiagonal(cube.Tables)
+    columnSums := sumColumns(cube.Tables)
+    rowSums := sumRows(cube.Tables)
+    poleSums := sumPoles(cube.Tables)
+    faceDiagonalSums := sumFaceDiagonal(cube.Tables)
+    spaceDiagonalSums := sumSpaceDiagonal(cube.Tables)
 
     targetSum := 65 // Adjust this value as needed
     fitness := 0.0
@@ -120,7 +119,6 @@ func EvaluateIndividual(individual []int) float64 {
     return fitness
 }
 
-// Helper function for absolute value
 func abs(x int) int {
     if x < 0 {
         return -x
@@ -128,12 +126,9 @@ func abs(x int) int {
     return x
 }
 
-// SumFaceDiagonal calculates the sum of the face diagonals
-func SumFaceDiagonal(tables [][][]string) []int {
+func sumFaceDiagonal(tables [][][]string) []int {
     sums := make([]int, 12)
 
-    // Face Diagonal Front
-    // Diagonal from top-left to bottom-right
     sum1 := 0
     for i := 0; i < Rows; i++ {
         val, _ := strconv.Atoi(tables[0][i][i])
@@ -141,7 +136,6 @@ func SumFaceDiagonal(tables [][][]string) []int {
     }
     sums[0] = sum1
 
-    // Diagonal from bottom-left to top-right
     sum2 := 0
     for i := 0; i < Rows; i++ {
         val, _ := strconv.Atoi(tables[0][Rows-1-i][i])
@@ -149,8 +143,6 @@ func SumFaceDiagonal(tables [][][]string) []int {
     }
     sums[1] = sum2
 
-    // Face Diagonal Back
-    // Diagonal from top-left to bottom-right
     sum3 := 0
     for i := 0; i < Rows; i++ {
         val, _ := strconv.Atoi(tables[NumTables-1][i][i])
@@ -158,7 +150,6 @@ func SumFaceDiagonal(tables [][][]string) []int {
     }
     sums[2] = sum3
 
-    // Diagonal from bottom-left to top-right
     sum4 := 0
     for i := 0; i < Rows; i++ {
         val, _ := strconv.Atoi(tables[NumTables-1][Rows-1-i][i])
@@ -166,8 +157,6 @@ func SumFaceDiagonal(tables [][][]string) []int {
     }
     sums[3] = sum4
 
-    // Face Diagonal Top
-    // From front to back
     sum5 := 0
     for i := 0; i < NumTables; i++ {
         val, _ := strconv.Atoi(tables[i][0][i])
@@ -175,7 +164,6 @@ func SumFaceDiagonal(tables [][][]string) []int {
     }
     sums[4] = sum5
 
-    // From back to front
     sum6 := 0
     for i := 0; i < NumTables; i++ {
         val, _ := strconv.Atoi(tables[i][0][Cols-1-i])
@@ -183,8 +171,6 @@ func SumFaceDiagonal(tables [][][]string) []int {
     }
     sums[5] = sum6
 
-    // Face Diagonal Down
-    // From front to back
     sum7 := 0
     for i := 0; i < NumTables; i++ {
         val, _ := strconv.Atoi(tables[i][Rows-1][0+i])
@@ -192,7 +178,6 @@ func SumFaceDiagonal(tables [][][]string) []int {
     }
     sums[6] = sum7
 
-    // From back to front
     sum8 := 0
     for i := 0; i < NumTables; i++ {
         val, _ := strconv.Atoi(tables[i][Rows-1][Cols-1-i])
@@ -200,8 +185,6 @@ func SumFaceDiagonal(tables [][][]string) []int {
     }
     sums[7] = sum8
 
-    // Face Diagonal Left
-    // From front to back
     sum9 := 0
     for i := 0; i < NumTables; i++ {
         val, _ := strconv.Atoi(tables[i][i][0])
@@ -209,7 +192,6 @@ func SumFaceDiagonal(tables [][][]string) []int {
     }
     sums[8] = sum9
 
-    // From back to front
     sum10 := 0
     for i := 0; i < NumTables; i++ {
         val, _ := strconv.Atoi(tables[i][Rows-1-i][0])
@@ -217,8 +199,6 @@ func SumFaceDiagonal(tables [][][]string) []int {
     }
     sums[9] = sum10
 
-    // Face Diagonal Right
-    // From front to back
     sum11 := 0
     for i := 0; i < NumTables; i++ {
         val, _ := strconv.Atoi(tables[i][i][Cols-1])
@@ -226,7 +206,6 @@ func SumFaceDiagonal(tables [][][]string) []int {
     }
     sums[10] = sum11
 
-    // From back to front
     sum12 := 0
     for i := 0; i < NumTables; i++ {
         val, _ := strconv.Atoi(tables[i][Rows-1-i][Cols-1])
@@ -237,38 +216,33 @@ func SumFaceDiagonal(tables [][][]string) []int {
     return sums
 }
 
-// SumSpaceDiagonal calculates the sum of the space diagonals
-func SumSpaceDiagonal(tables [][][]string) []int {
+func sumSpaceDiagonal(tables [][][]string) []int {
     sums := make([]int, 4)
 
-    // Space Diagonal 1
     sum1 := 0
     for i := 0; i < NumTables; i++ {
-        val, _ := strconv.Atoi(tables[i][i][i]) // row (i) col (i)
+        val, _ := strconv.Atoi(tables[i][i][i])
         sum1 += val
     }
     sums[0] = sum1
 
-    // Space Diagonal 2
     sum2 := 0
     for i := 0; i < NumTables; i++ {
-        val, _ := strconv.Atoi(tables[i][i][Cols-1-i]) // row (i) col (Cols-1-i)
+        val, _ := strconv.Atoi(tables[i][i][Cols-1-i])
         sum2 += val
     }
     sums[1] = sum2
 
-    // Space Diagonal 3
     sum3 := 0
     for i := 0; i < NumTables; i++ {
-        val, _ := strconv.Atoi(tables[i][Rows-1-i][i]) // row (Rows-1-i) col (i)
+        val, _ := strconv.Atoi(tables[i][Rows-1-i][i])
         sum3 += val
     }
     sums[2] = sum3
 
-    // Space Diagonal 4
     sum4 := 0
     for i := 0; i < NumTables; i++ {
-        val, _ := strconv.Atoi(tables[i][Rows-1-i][Cols-1-i]) // row (Rows-1-i) col (Cols-1)
+        val, _ := strconv.Atoi(tables[i][Rows-1-i][Cols-1-i])
         sum4 += val
     }
     sums[3] = sum4
