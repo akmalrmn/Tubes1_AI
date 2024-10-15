@@ -1,4 +1,4 @@
-package geneticalgorithm
+package genetic_algorithm
 
 import (
     "fmt"

@@ -3,22 +3,22 @@ package handlers
 import (
     "encoding/json"
     "net/http"
-    "magic-cube-solver/internal/algorithms/geneticalgorithm"
+    "magic-cube-solver/internal/algorithms/genetic_algorithm"
 )
 
 func GeneticAlgorithmHandler(w http.ResponseWriter, r *http.Request) {
-    cube := geneticalgorithm.GenerateCube()
+    cube := genetic_algorithm.GenerateCube()
 
     response := struct {
-        Cube            geneticalgorithm.Cube `json:"cube"`
+        Cube            genetic_algorithm.Cube `json:"cube"`
         ColumnSums      []int                  `json:"columnSums"`
         RowSums         []int                  `json:"rowSums"`
         PoleSums        []int                  `json:"poleSums"`
     }{
         Cube:       cube,
-        ColumnSums: geneticalgorithm.SumColumns(cube.Tables),
-        RowSums:    geneticalgorithm.SumRows(cube.Tables),
-        PoleSums:   geneticalgorithm.SumPoles(cube.Tables),
+        ColumnSums: genetic_algorithm.SumColumns(cube.Tables),
+        RowSums:    genetic_algorithm.SumRows(cube.Tables),
+        PoleSums:   genetic_algorithm.SumPoles(cube.Tables),
     }
 
     w.Header().Set("Content-Type", "application/json")
