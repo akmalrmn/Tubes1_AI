@@ -50,7 +50,6 @@ func GenerateTable() [][][]string {
 }
 
 func PrintTables(tables [][][]string) {
-	fmt.Println()
 	for i := 0; i < rows; i++ {
 		for t := 0; t < numTables; t++ {
 			for j := 0; j < cols; j++ {
@@ -350,16 +349,92 @@ func CalculateObjectiveFunction(tables [][][]string) int {
 	return totalAbsSum
 }
 
+func CalculateFitness(objectiveValues []int) []float64 {
+	fitnessValues := make([]float64, len(objectiveValues))
+	for i, obj := range objectiveValues {
+		if obj > 0 {
+			fitnessValues[i] = 1.0 / float64(obj)
+		}
+	}
+
+	totalFitness := 0.0
+	for _, fitness := range fitnessValues {
+		totalFitness += fitness
+	}
+
+	for i := range fitnessValues {
+		fitnessValues[i] = fitnessValues[i] / totalFitness * 100.0
+	}
+
+	return fitnessValues
+}
+
+func RouletteWheelSelection(fitnessValues []float64, numParents int) []int {
+	selected := make([]int, numParents)
+	rand.Seed(time.Now().UnixNano())
+
+	cumulative := make([]float64, len(fitnessValues))
+	cumulative[0] = fitnessValues[0]
+	for i := 1; i < len(fitnessValues); i++ {
+		cumulative[i] = cumulative[i-1] + fitnessValues[i]
+	}
+
+	for i := 0; i < numParents; i++ {
+		r := rand.Float64() * 100.0
+		for j := range cumulative {
+			if r <= cumulative[j] {
+				selected[i] = j
+				break
+			}
+		}
+	}
+
+	return selected
+}
+
 func main() {
 	var n int
 	fmt.Println("Enter the number of individuals (population size): ")
 	fmt.Scanln(&n)
 
+	objectiveValues := make([]int, n)
+	fitnessValues := make([]float64, n)
+
 	for i := 1; i <= n; i++ {
-		fmt.Printf("\nIndividual %d:", i)
+		fmt.Printf("\nIndividual %d:\n", i)
 		tables := GenerateTable()
 		PrintTables(tables)
 		objectiveFunctionValue := CalculateObjectiveFunction(tables)
+		objectiveValues[i-1] = objectiveFunctionValue
 		fmt.Printf("Objective Function Value for Individual %d: %d\n", i, objectiveFunctionValue)
+	}
+
+	fitnessValues = CalculateFitness(objectiveValues)
+	fmt.Println()
+
+	for i := 1; i <= n; i++ {
+		fmt.Printf("Fitness Percentage for Individual %d: %.2f%%\n", i, fitnessValues[i-1])
+	}
+
+	var numParents int
+	if n < 4 {
+		numParents = 2
+	} else {
+		numParents = (n + 1) / 2
+	}
+
+	selectedParents := RouletteWheelSelection(fitnessValues, numParents)
+
+	fmt.Printf("\nSelected Individuals: ")
+	for i, idx := range selectedParents {
+		if i != 0 {
+			fmt.Print(", ")
+		}
+		fmt.Printf("%d", idx+1)
+	}
+	fmt.Println()
+
+	for _, idx := range selectedParents {
+		fmt.Printf("Individual %d with objective function value %d selected.\n", idx+1, objectiveValues[idx])
 	}
 }
