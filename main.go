@@ -427,6 +427,85 @@ func Crossover(selected []Individual) []Individual {
 	return children
 }
 
+// Function to print a single individual
+func PrintIndividual(ind Individual) {
+	fmt.Printf("Individual ID: %d, ObjectiveFunc: %d\n", ind.ID, ind.ObjectiveFunc)
+	PrintTables(ind.Tables)
+	fmt.Println()
+}
+
+// Function to print all individuals
+func PrintAllIndividuals(individuals []Individual) {
+	for _, ind := range individuals {
+		PrintIndividual(ind)
+	}
+}
+
+// Function to perform mutation on individuals
+func Mutation(children []Individual) {
+	rand.Seed(time.Now().UnixNano())
+	mutationTimes := rand.Intn(6) + 10 // Random number between 10 and 15
+
+	// To store unique mutation points
+	mutationPoints := make(map[[2]int]struct{})
+	for len(mutationPoints) < mutationTimes {
+		tableIdx := rand.Intn(numTables)
+		rowIdx := rand.Intn(rows)
+		colIdx := rand.Intn(cols)
+		point := [2]int{tableIdx, rowIdx*cols + colIdx} // Store in flat index
+		mutationPoints[point] = struct{}{}              // Using struct{} as a value type for uniqueness
+	}
+
+	// Convert mutationPoints map to a slice for easier iteration
+	pointsSlice := make([][2]int, 0, len(mutationPoints))
+	for point := range mutationPoints {
+		pointsSlice = append(pointsSlice, point)
+	}
+
+	// Perform mutation for each child using the same mutation points
+	for _, child := range children {
+		fmt.Printf("Mutating Child %d:\n", child.ID)
+
+		for _, point := range pointsSlice {
+			sourceTableIdx := point[0]
+			originalColIdx := point[1] % cols
+			originalRowIdx := point[1] / cols
+
+			// Randomly select a target mutation point from a different table
+			var targetTableIdx, targetRowIdx, targetColIdx int
+
+			for {
+				targetTableIdx = rand.Intn(numTables)
+				targetRowIdx = rand.Intn(rows)
+				targetColIdx = rand.Intn(cols)
+
+				// Ensure we are not swapping with the same point
+				if targetTableIdx != sourceTableIdx ||
+					(targetTableIdx == sourceTableIdx && (targetRowIdx != originalRowIdx || targetColIdx != originalColIdx)) {
+					break
+				}
+			}
+
+			// Swap the values
+			sourceValue := child.Tables[sourceTableIdx][originalRowIdx][originalColIdx]
+			targetValue := child.Tables[targetTableIdx][targetRowIdx][targetColIdx]
+
+			// Perform the swap
+			child.Tables[sourceTableIdx][originalRowIdx][originalColIdx] = targetValue
+			child.Tables[targetTableIdx][targetRowIdx][targetColIdx] = sourceValue
+
+			// Print the swap details with the values
+			fmt.Printf("Swapped value %s at Table %d Position (%d, %d) with value %s at Table %d Position (%d, %d)\n",
+				sourceValue, sourceTableIdx+1, originalRowIdx+1, originalColIdx+1,
+				targetValue, targetTableIdx+1, targetRowIdx+1, targetColIdx+1)
+		}
+
+		// Calculate and print the objective function value after mutation
+		child.ObjectiveFunc = CalculateObjectiveFunction(child.Tables)
+		fmt.Printf("Objective Function Value for Mutated Child %d: %d\n\n", child.ID, child.ObjectiveFunc)
+	}
+}
+
 func main() {
 	var n int
 	fmt.Println("Enter the number of individuals (population size): ")
@@ -473,13 +552,9 @@ func main() {
 		fmt.Printf("Individual %d with objective function value %d selected.\n", idx+1, objectiveValues[idx])
 	}
 
+	// After generating children
 	children := Crossover(selectedParents)
 
-	fmt.Println("\nChildren after crossover:")
-	for _, child := range children {
-		fmt.Printf("Child %d:\n", child.ID)
-		PrintTables(child.Tables)
-		child.ObjectiveFunc = CalculateObjectiveFunction(child.Tables)
-		fmt.Printf("Objective Function Value for Child %d: %d\n\n", child.ID, child.ObjectiveFunc)
-	}
+	// Apply mutation on the children
+	Mutation(children)
 }
