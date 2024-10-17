@@ -20,6 +20,13 @@ func abs(x int) int {
 	return x
 }
 
+// Individual represents an individual in the population
+type Individual struct {
+	ID            int
+	Tables        [][][]string
+	ObjectiveFunc int
+}
+
 func GenerateTable() [][][]string {
 	rand.Seed(time.Now().UnixNano())
 
@@ -345,7 +352,6 @@ func CalculateObjectiveFunction(tables [][][]string) int {
 	totalAbsSum := totalAbsSumColumns + totalAbsSumRows + totalAbsSumPoles +
 		totalAbsSumFaceDiagonal + totalAbsSumSpaceDiagonal
 
-	// fmt.Printf("Total Objective Function: %d\n", totalAbsSum)
 	return totalAbsSum
 }
 
@@ -373,19 +379,17 @@ func RouletteWheelSelection(fitnessValues []float64, numSelections int) []int {
 	selected := make([]int, numSelections)
 	rand.Seed(time.Now().UnixNano())
 
-	// Create cumulative fitness ranges for roulette wheel
 	cumulative := make([]float64, len(fitnessValues))
 	cumulative[0] = fitnessValues[0]
 	for i := 1; i < len(fitnessValues); i++ {
 		cumulative[i] = cumulative[i-1] + fitnessValues[i]
 	}
 
-	// Perform roulette selection numSelections times
 	for i := 0; i < numSelections; i++ {
-		r := rand.Float64() * 100.0 // Spin the roulette (0 to 100%)
+		r := rand.Float64() * 100.0
 		for j := range cumulative {
 			if r <= cumulative[j] {
-				selected[i] = j // Select individual j
+				selected[i] = j
 				break
 			}
 		}
@@ -394,34 +398,67 @@ func RouletteWheelSelection(fitnessValues []float64, numSelections int) []int {
 	return selected
 }
 
+func Crossover(selected []Individual) []Individual {
+	var children []Individual
+
+	for i := 0; i < len(selected); i++ {
+		childTables := make([][][]string, 5)
+
+		for j := 0; j < 3; j++ {
+			childTables[j] = selected[i].Tables[j]
+		}
+
+		for j := 3; j < 5; j++ {
+			randIdx := rand.Intn(len(selected))
+			childTables[j] = selected[randIdx].Tables[j]
+		}
+
+		child := Individual{
+			ID:            i + 1,
+			Tables:        childTables,
+			ObjectiveFunc: 0,
+		}
+		children = append(children, child)
+	}
+
+	return children
+}
+
 func main() {
 	var n int
 	fmt.Println("Enter the number of individuals (population size): ")
 	fmt.Scanln(&n)
 
+	population := make([]Individual, n)
 	objectiveValues := make([]int, n)
-	fitnessValues := make([]float64, n)
 
-	for i := 1; i <= n; i++ {
-		fmt.Printf("\nIndividual %d:\n", i)
+	for i := 0; i < n; i++ {
+		fmt.Printf("\nIndividual %d:\n", i+1)
 		tables := GenerateTable()
 		PrintTables(tables)
 		objectiveFunctionValue := CalculateObjectiveFunction(tables)
-		objectiveValues[i-1] = objectiveFunctionValue
-		fmt.Printf("Objective Function Value for Individual %d: %d\n", i, objectiveFunctionValue)
+		objectiveValues[i] = objectiveFunctionValue
+		population[i] = Individual{
+			ID:            i + 1,
+			Tables:        tables,
+			ObjectiveFunc: objectiveFunctionValue,
+		}
+		fmt.Printf("Objective Function Value for Individual %d: %d\n", i+1, objectiveFunctionValue)
 	}
 
-	fitnessValues = CalculateFitness(objectiveValues)
+	fitnessValues := CalculateFitness(objectiveValues)
 	fmt.Println()
 
 	for i := 1; i <= n; i++ {
 		fmt.Printf("Fitness Percentage for Individual %d: %.2f%%\n", i, fitnessValues[i-1])
 	}
 
-	selectedParents := RouletteWheelSelection(fitnessValues, n)
+	selectedIndices := RouletteWheelSelection(fitnessValues, n)
 
+	selectedParents := make([]Individual, n)
 	fmt.Printf("\nSelected Individuals: ")
-	for i, idx := range selectedParents {
+	for i, idx := range selectedIndices {
+		selectedParents[i] = population[idx]
 		if i != 0 {
 			fmt.Print(", ")
 		}
@@ -429,7 +466,17 @@ func main() {
 	}
 	fmt.Println()
 
-	for _, idx := range selectedParents {
+	for _, idx := range selectedIndices {
 		fmt.Printf("Individual %d with objective function value %d selected.\n", idx+1, objectiveValues[idx])
+	}
+
+	children := Crossover(selectedParents)
+
+	fmt.Println("\nChildren after crossover:")
+	for _, child := range children {
+		fmt.Printf("Child %d:\n", child.ID)
+		PrintTables(child.Tables)
+		child.ObjectiveFunc = CalculateObjectiveFunction(child.Tables)
+		fmt.Printf("Objective Function Value for Child %d: %d\n\n", child.ID, child.ObjectiveFunc)
 	}
 }
