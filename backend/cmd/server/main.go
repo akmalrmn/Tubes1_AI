@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-    log.Println("Starting server on http://localhost:8080")
+    log.Println("Starting server on http://localhost:8070")
     server.StartServer()
 }
