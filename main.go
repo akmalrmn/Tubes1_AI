@@ -409,7 +409,10 @@ func Crossover(selected []Individual) []Individual {
 		}
 
 		for j := 3; j < 5; j++ {
-			randIdx := rand.Intn(len(selected))
+			randIdx := i
+			for randIdx == i {
+				randIdx = rand.Intn(len(selected))
+			}
 			childTables[j] = selected[randIdx].Tables[j]
 		}
 
