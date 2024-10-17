@@ -49,12 +49,8 @@ func GenerateTable() [][][]string {
 	return tables
 }
 
-func PrintTables(tables [][][]string, view string) {
-	for i := 0; i < numTables; i++ {
-		fmt.Printf("Table %d%s\t\t", i+1, view)
-	}
+func PrintTables(tables [][][]string) {
 	fmt.Println()
-
 	for i := 0; i < rows; i++ {
 		for t := 0; t < numTables; t++ {
 			for j := 0; j < cols; j++ {
@@ -95,7 +91,6 @@ func GetSideView(tables [][][]string) [][][]string {
 }
 
 func SumColumns(tables [][][]string) int {
-	fmt.Println("\nColumn Sums:")
 	totalAbsSumColumns := 0
 
 	for tableIdx := 0; tableIdx < numTables; tableIdx++ {
@@ -107,16 +102,16 @@ func SumColumns(tables [][][]string) int {
 			}
 			abs_sum := abs(315 - sum)
 			totalAbsSumColumns += abs_sum
-			fmt.Printf("Col %d (Table %d): %d %d\n", col+1+(tableIdx*cols), tableIdx+1, sum, abs_sum)
+			// fmt.Printf("Col %d (Table %d): %d %d\n", col+1+(tableIdx*cols), tableIdx+1, sum, abs_sum)
 		}
 	}
 
-	fmt.Printf("totalAbsSumColumns: %d\n", totalAbsSumColumns)
+	// fmt.Printf("totalAbsSumColumns: %d\n", totalAbsSumColumns)
 	return totalAbsSumColumns
 }
 
 func SumRows(tables [][][]string) int {
-	fmt.Println("\nRow Sums:")
+	// fmt.Println("\nRow Sums:")
 	totalAbsSumRows := 0
 
 	for tableIdx := 0; tableIdx < numTables; tableIdx++ {
@@ -128,16 +123,16 @@ func SumRows(tables [][][]string) int {
 			}
 			abs_sum := abs(315 - sum)
 			totalAbsSumRows += abs_sum
-			fmt.Printf("Row %d (Table %d): %d %d\n", row+1+(tableIdx*rows), tableIdx+1, sum, abs_sum)
+			// fmt.Printf("Row %d (Table %d): %d %d\n", row+1+(tableIdx*rows), tableIdx+1, sum, abs_sum)
 		}
 	}
 
-	fmt.Printf("totalAbsSumRows: %d\n", totalAbsSumRows)
+	// fmt.Printf("totalAbsSumRows: %d\n", totalAbsSumRows)
 	return totalAbsSumRows
 }
 
 func SumPoles(tables [][][]string) int {
-	fmt.Println("\nPole Sums:")
+	// fmt.Println("\nPole Sums:")
 	totalAbsSumPoles := 0
 
 	for pole := 0; pole < rows*cols; pole++ {
@@ -150,15 +145,15 @@ func SumPoles(tables [][][]string) int {
 		}
 		abs_sum := abs(315 - sum)
 		totalAbsSumPoles += abs_sum
-		fmt.Printf("Pole %d: %d %d\n", pole+1, sum, abs_sum)
+		// fmt.Printf("Pole %d: %d %d\n", pole+1, sum, abs_sum)
 	}
 
-	fmt.Printf("Total abs_sum Poles: %d\n", totalAbsSumPoles)
+	// fmt.Printf("totalAbsSumPoles: %d\n", totalAbsSumPoles)
 	return totalAbsSumPoles
 }
 
 func SumFaceDiagonal(tables [][][]string) int {
-	fmt.Println("\nFace Diagonal Sums:")
+	// fmt.Println("\nFace Diagonal Sums:")
 	totalAbsSumFaceDiagonal := 0
 
 	// Face Diagonal Front
@@ -170,7 +165,7 @@ func SumFaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum1 := abs(315 - sum1)
 	totalAbsSumFaceDiagonal += abs_sum1
-	fmt.Printf("Face Diagonal Front (Top-left to Bottom-right): %d %d\n", sum1, abs_sum1)
+	// fmt.Printf("Face Diagonal Front (Top-left to Bottom-right): %d %d\n", sum1, abs_sum1)
 
 	// Diagonal from bottom-left to top-right
 	sum2 := 0
@@ -180,7 +175,7 @@ func SumFaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum2 := abs(315 - sum2)
 	totalAbsSumFaceDiagonal += abs_sum2
-	fmt.Printf("Face Diagonal Front (Bottom-left to Top-right): %d %d\n", sum2, abs_sum2)
+	// fmt.Printf("Face Diagonal Front (Bottom-left to Top-right): %d %d\n", sum2, abs_sum2)
 
 	// Face Diagonal Back
 	// Diagonal from top-left to bottom-right
@@ -191,7 +186,7 @@ func SumFaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum3 := abs(315 - sum3)
 	totalAbsSumFaceDiagonal += abs_sum3
-	fmt.Printf("Face Diagonal Back (Top-left to Bottom-right): %d %d\n", sum3, abs_sum3)
+	// fmt.Printf("Face Diagonal Back (Top-left to Bottom-right): %d %d\n", sum3, abs_sum3)
 
 	// Diagonal from bottom-left to top-right
 	sum4 := 0
@@ -201,7 +196,7 @@ func SumFaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum4 := abs(315 - sum4)
 	totalAbsSumFaceDiagonal += abs_sum4
-	fmt.Printf("Face Diagonal Back (Bottom-left to Top-right): %d %d\n", sum4, abs_sum4)
+	// fmt.Printf("Face Diagonal Back (Bottom-left to Top-right): %d %d\n", sum4, abs_sum4)
 
 	// Face Diagonal Top
 	// From front to back
@@ -212,7 +207,7 @@ func SumFaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum5 := abs(315 - sum5)
 	totalAbsSumFaceDiagonal += abs_sum5
-	fmt.Printf("Face Diagonal Top (Front to Back): %d %d\n", sum5, abs_sum5)
+	// fmt.Printf("Face Diagonal Top (Front to Back): %d %d\n", sum5, abs_sum5)
 
 	// From back to front
 	sum6 := 0
@@ -222,7 +217,7 @@ func SumFaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum6 := abs(315 - sum6)
 	totalAbsSumFaceDiagonal += abs_sum6
-	fmt.Printf("Face Diagonal Top (Back to Front): %d %d\n", sum6, abs_sum6)
+	// fmt.Printf("Face Diagonal Top (Back to Front): %d %d\n", sum6, abs_sum6)
 
 	// Face Diagonal Down
 	// From front to back
@@ -233,7 +228,7 @@ func SumFaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum7 := abs(315 - sum7)
 	totalAbsSumFaceDiagonal += abs_sum7
-	fmt.Printf("Face Diagonal Down (Front to Back): %d %d\n", sum7, abs_sum7)
+	// fmt.Printf("Face Diagonal Down (Front to Back): %d %d\n", sum7, abs_sum7)
 
 	// From back to front
 	sum8 := 0
@@ -243,7 +238,7 @@ func SumFaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum8 := abs(315 - sum8)
 	totalAbsSumFaceDiagonal += abs_sum8
-	fmt.Printf("Face Diagonal Down (Back to Front): %d %d\n", sum8, abs_sum8)
+	// fmt.Printf("Face Diagonal Down (Back to Front): %d %d\n", sum8, abs_sum8)
 
 	// Face Diagonal Left
 	// From front to back
@@ -254,7 +249,7 @@ func SumFaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum9 := abs(315 - sum9)
 	totalAbsSumFaceDiagonal += abs_sum9
-	fmt.Printf("Face Diagonal Left (Front to Back): %d %d\n", sum9, abs_sum9)
+	// fmt.Printf("Face Diagonal Left (Front to Back): %d %d\n", sum9, abs_sum9)
 
 	// From back to front
 	sum10 := 0
@@ -264,7 +259,7 @@ func SumFaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum10 := abs(315 - sum10)
 	totalAbsSumFaceDiagonal += abs_sum10
-	fmt.Printf("Face Diagonal Left (Back to Front): %d %d\n", sum10, abs_sum10)
+	// fmt.Printf("Face Diagonal Left (Back to Front): %d %d\n", sum10, abs_sum10)
 
 	// Face Diagonal Right
 	// From front to back
@@ -275,7 +270,7 @@ func SumFaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum11 := abs(315 - sum11)
 	totalAbsSumFaceDiagonal += abs_sum11
-	fmt.Printf("Face Diagonal Right (Front to Back): %d %d\n", sum11, abs_sum11)
+	// fmt.Printf("Face Diagonal Right (Front to Back): %d %d\n", sum11, abs_sum11)
 
 	// From back to front
 	sum12 := 0
@@ -285,15 +280,15 @@ func SumFaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum12 := abs(315 - sum12)
 	totalAbsSumFaceDiagonal += abs_sum12
-	fmt.Printf("Face Diagonal Right (Back to Front): %d %d\n", sum12, abs_sum12)
+	// fmt.Printf("Face Diagonal Right (Back to Front): %d %d\n", sum12, abs_sum12)
 
 	// Return total abs_sum
-	fmt.Printf("Total abs_sum FaceDiagonal: %d\n", totalAbsSumFaceDiagonal)
+	// fmt.Printf("totalAbsSumFaceDiagonal: %d\n", totalAbsSumFaceDiagonal)
 	return totalAbsSumFaceDiagonal
 }
 
 func SumSpaceDiagonal(tables [][][]string) int {
-	fmt.Println("\nSpace Diagonal Sums:")
+	// fmt.Println("\nSpace Diagonal Sums:")
 	totalAbsSumSpaceDiagonal := 0
 
 	// Space Diagonal 1
@@ -304,7 +299,7 @@ func SumSpaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum1 := abs(315 - sum1)
 	totalAbsSumSpaceDiagonal += abs_sum1
-	fmt.Printf("Space Diagonal 1: %d %d\n", sum1, abs_sum1)
+	// fmt.Printf("Space Diagonal 1: %d %d\n", sum1, abs_sum1)
 
 	// Space Diagonal 2
 	sum2 := 0
@@ -314,7 +309,7 @@ func SumSpaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum2 := abs(315 - sum2)
 	totalAbsSumSpaceDiagonal += abs_sum2
-	fmt.Printf("Space Diagonal 2: %d %d\n", sum2, abs_sum2)
+	// fmt.Printf("Space Diagonal 2: %d %d\n", sum2, abs_sum2)
 
 	// Space Diagonal 3
 	sum3 := 0
@@ -324,7 +319,7 @@ func SumSpaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum3 := abs(315 - sum3)
 	totalAbsSumSpaceDiagonal += abs_sum3
-	fmt.Printf("Space Diagonal 3: %d %d\n", sum3, abs_sum3)
+	// fmt.Printf("Space Diagonal 3: %d %d\n", sum3, abs_sum3)
 
 	// Space Diagonal 4
 	sum4 := 0
@@ -334,10 +329,10 @@ func SumSpaceDiagonal(tables [][][]string) int {
 	}
 	abs_sum4 := abs(315 - sum4)
 	totalAbsSumSpaceDiagonal += abs_sum4
-	fmt.Printf("Space Diagonal 4: %d %d\n", sum4, abs_sum4)
+	// fmt.Printf("Space Diagonal 4: %d %d\n", sum4, abs_sum4)
 
 	// Print and return the total abs_sum
-	fmt.Printf("Total abs_sum SpaceDiagonal: %d\n", totalAbsSumSpaceDiagonal)
+	// fmt.Printf("totalAbsSumSpaceDiagonal: %d\n", totalAbsSumSpaceDiagonal)
 	return totalAbsSumSpaceDiagonal
 }
 
@@ -351,31 +346,20 @@ func CalculateObjectiveFunction(tables [][][]string) int {
 	totalAbsSum := totalAbsSumColumns + totalAbsSumRows + totalAbsSumPoles +
 		totalAbsSumFaceDiagonal + totalAbsSumSpaceDiagonal
 
-	fmt.Printf("Total Objective Function (Absolute Sum): %d\n", totalAbsSum)
+	// fmt.Printf("Total Objective Function: %d\n", totalAbsSum)
 	return totalAbsSum
 }
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
+	var n int
+	fmt.Println("Enter the number of individuals (population size): ")
+	fmt.Scanln(&n)
 
-	tables := GenerateTable()
-
-	fmt.Println("Front View (Tables 1A to 5A):")
-	PrintTables(tables, "A")
-
-	// // Generate the top-down view tables (1B to 5B)
-	// topViewTables := GetTopView(tables)
-
-	// // Print the top-down view tables (1B to 5B)
-	// fmt.Println("\nTop-Down View (Tables 1B to 5B):")
-	// PrintTables(topViewTables, "B")
-
-	// // Generate the side view tables (1C to 5C)
-	// sideViewTables := GetSideView(tables)
-
-	// // Print the side view tables (1C to 5C)
-	// fmt.Println("\nSide View (Tables 1C to 5C):")
-	// PrintTables(sideViewTables, "C")
-
-	CalculateObjectiveFunction(tables)
+	for i := 1; i <= n; i++ {
+		fmt.Printf("\nIndividual %d:", i)
+		tables := GenerateTable()
+		PrintTables(tables)
+		objectiveFunctionValue := CalculateObjectiveFunction(tables)
+		fmt.Printf("Objective Function Value for Individual %d: %d\n", i, objectiveFunctionValue)
+	}
 }
