@@ -10,7 +10,7 @@ export async function runGeneticAlgorithm(initialState, populationSize, generati
 }
 
 export async function runSimulatedAnnealing() {
-    const response = await fetch('http://localhost:8070/api/anies', {
+    const response = await fetch('http://localhost:8070/api/simulated-annealing', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
