@@ -369,21 +369,23 @@ func CalculateFitness(objectiveValues []int) []float64 {
 	return fitnessValues
 }
 
-func RouletteWheelSelection(fitnessValues []float64, numParents int) []int {
-	selected := make([]int, numParents)
+func RouletteWheelSelection(fitnessValues []float64, numSelections int) []int {
+	selected := make([]int, numSelections)
 	rand.Seed(time.Now().UnixNano())
 
+	// Create cumulative fitness ranges for roulette wheel
 	cumulative := make([]float64, len(fitnessValues))
 	cumulative[0] = fitnessValues[0]
 	for i := 1; i < len(fitnessValues); i++ {
 		cumulative[i] = cumulative[i-1] + fitnessValues[i]
 	}
 
-	for i := 0; i < numParents; i++ {
-		r := rand.Float64() * 100.0
+	// Perform roulette selection numSelections times
+	for i := 0; i < numSelections; i++ {
+		r := rand.Float64() * 100.0 // Spin the roulette (0 to 100%)
 		for j := range cumulative {
 			if r <= cumulative[j] {
-				selected[i] = j
+				selected[i] = j // Select individual j
 				break
 			}
 		}
@@ -416,14 +418,7 @@ func main() {
 		fmt.Printf("Fitness Percentage for Individual %d: %.2f%%\n", i, fitnessValues[i-1])
 	}
 
-	var numParents int
-	if n < 4 {
-		numParents = 2
-	} else {
-		numParents = (n + 1) / 2
-	}
-
-	selectedParents := RouletteWheelSelection(fitnessValues, numParents)
+	selectedParents := RouletteWheelSelection(fitnessValues, n)
 
 	fmt.Printf("\nSelected Individuals: ")
 	for i, idx := range selectedParents {
