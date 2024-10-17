@@ -17,7 +17,7 @@ type Cube struct {
     Tables [][][]string
 }
 
-func generateTable() [][]string {
+func GenerateTable() [][]string {
     table := make([][]string, Rows)
     for i := range table {
         table[i] = make([]string, Cols)
@@ -28,16 +28,16 @@ func generateTable() [][]string {
     return table
 }
 
-func generateCube() Cube {
+func GenerateCube() Cube {
     rand.Seed(time.Now().UnixNano())
     tables := make([][][]string, NumTables)
     for i := 0; i < NumTables; i++ {
-        tables[i] = generateTable()
+        tables[i] = GenerateTable()
     }
     return Cube{Tables: tables}
 }
 
-func sumColumns(tables [][][]string) []int {
+func SumColumns(tables [][][]string) []int {
     sums := make([]int, Cols*NumTables)
     for tableIdx := 0; tableIdx < NumTables; tableIdx++ {
         for col := 0; col < Cols; col++ {
@@ -52,7 +52,7 @@ func sumColumns(tables [][][]string) []int {
     return sums
 }
 
-func sumRows(tables [][][]string) []int {
+func SumRows(tables [][][]string) []int {
     sums := make([]int, Rows*NumTables)
     for tableIdx := 0; tableIdx < NumTables; tableIdx++ {
         for row := 0; row < Rows; row++ {
@@ -67,7 +67,7 @@ func sumRows(tables [][][]string) []int {
     return sums
 }
 
-func sumPoles(tables [][][]string) []int {
+func SumPoles(tables [][][]string) []int {
     sums := make([]int, Rows*Cols)
     for pole := 0; pole < Rows*Cols; pole++ {
         sum := 0
@@ -82,8 +82,8 @@ func sumPoles(tables [][][]string) []int {
     return sums
 }
 
-func evaluateIndividual(individual []int) float64 {
-    cube := generateCube()
+func EvaluateIndividual(individual []int) float64 {
+    cube := GenerateCube()
     for i, value := range individual {
         tableIdx := i / (Rows * Cols)
         rowIdx := (i % (Rows * Cols)) / Cols
@@ -91,11 +91,11 @@ func evaluateIndividual(individual []int) float64 {
         cube.Tables[tableIdx][rowIdx][colIdx] = strconv.Itoa(value)
     }
 
-    columnSums := sumColumns(cube.Tables)
-    rowSums := sumRows(cube.Tables)
-    poleSums := sumPoles(cube.Tables)
-    faceDiagonalSums := sumFaceDiagonal(cube.Tables)
-    spaceDiagonalSums := sumSpaceDiagonal(cube.Tables)
+    columnSums := SumColumns(cube.Tables)
+    rowSums := SumRows(cube.Tables)
+    poleSums := SumPoles(cube.Tables)
+    faceDiagonalSums := SumFaceDiagonal(cube.Tables)
+    spaceDiagonalSums := SumSpaceDiagonal(cube.Tables)
 
     targetSum := 65 // Adjust this value as needed
     fitness := 0.0
@@ -126,7 +126,7 @@ func abs(x int) int {
     return x
 }
 
-func sumFaceDiagonal(tables [][][]string) []int {
+func SumFaceDiagonal(tables [][][]string) []int {
     sums := make([]int, 12)
 
     sum1 := 0
@@ -216,7 +216,7 @@ func sumFaceDiagonal(tables [][][]string) []int {
     return sums
 }
 
-func sumSpaceDiagonal(tables [][][]string) []int {
+func SumSpaceDiagonal(tables [][][]string) []int {
     sums := make([]int, 4)
 
     sum1 := 0

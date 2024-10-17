@@ -6,5 +6,5 @@ cd backend
 ```
 2. Run the server
 ```
-go run/cmd/server/main.go
+go run cmd/server/main.go
 ```
