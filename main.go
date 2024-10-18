@@ -551,11 +551,8 @@ func main() {
 	for _, idx := range selectedIndices {
 		fmt.Printf("Individual %d with objective function value %d selected.\n", idx+1, objectiveValues[idx])
 	}
+
 	fmt.Println()
-
-	// After generating children
 	children := Crossover(selectedParents)
-
-	// Apply mutation on the children
 	Mutation(children)
 }
