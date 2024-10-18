@@ -427,20 +427,6 @@ func Crossover(selected []Individual) []Individual {
 	return children
 }
 
-// Function to print a single individual
-func PrintIndividual(ind Individual) {
-	fmt.Printf("Individual ID: %d, ObjectiveFunc: %d\n", ind.ID, ind.ObjectiveFunc)
-	PrintTables(ind.Tables)
-	fmt.Println()
-}
-
-// Function to print all individuals
-func PrintAllIndividuals(individuals []Individual) {
-	for _, ind := range individuals {
-		PrintIndividual(ind)
-	}
-}
-
 // Function to perform mutation on individuals
 func Mutation(children []Individual) {
 	rand.Seed(time.Now().UnixNano())
@@ -503,6 +489,16 @@ func Mutation(children []Individual) {
 		// Calculate and print the objective function value after mutation
 		child.ObjectiveFunc = CalculateObjectiveFunction(child.Tables)
 		fmt.Printf("Objective Function Value for Mutated Child %d: %d\n\n", child.ID, child.ObjectiveFunc)
+
+		// Print the mutated child's tables
+		fmt.Printf("Mutated Child %d\n", child.ID)
+		for tableIdx, table := range child.Tables {
+			fmt.Printf("Table %d:\n", tableIdx+1)
+			for _, row := range table {
+				fmt.Println(row)
+			}
+			fmt.Println()
+		}
 	}
 }
 
@@ -551,6 +547,7 @@ func main() {
 	for _, idx := range selectedIndices {
 		fmt.Printf("Individual %d with objective function value %d selected.\n", idx+1, objectiveValues[idx])
 	}
+	fmt.Println()
 
 	// After generating children
 	children := Crossover(selectedParents)
