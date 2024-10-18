@@ -20,7 +20,6 @@ func abs(x int) int {
 	return x
 }
 
-// Individual represents an individual in the population
 type Individual struct {
 	ID            int
 	Tables        [][][]string
@@ -427,8 +426,7 @@ func Crossover(selected []Individual) []Individual {
 	return children
 }
 
-// Function to perform mutation on individuals
-func Mutation(children []Individual) {
+func Mutation(children []Individual) []Individual {
 	rand.Seed(time.Now().UnixNano())
 	mutationTimes := rand.Intn(6) + 10 // Random number between 10 and 15
 
@@ -449,7 +447,7 @@ func Mutation(children []Individual) {
 	}
 
 	// Perform mutation for each child using the same mutation points
-	for _, child := range children {
+	for i, child := range children {
 		fmt.Printf("Mutating Child %d:\n", child.ID)
 
 		for _, point := range pointsSlice {
@@ -499,7 +497,13 @@ func Mutation(children []Individual) {
 			}
 			fmt.Println()
 		}
+
+		// Assign the mutated child back to the children slice
+		children[i] = child
 	}
+
+	// Return the mutated children
+	return children
 }
 
 func main() {
