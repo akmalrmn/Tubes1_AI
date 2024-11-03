@@ -503,10 +503,14 @@ func main() {
 		}
 	}
 
+	var highestIndividual, lowestIndividual Individual
+	var highestIter, lowestIter, highestValue, lowestValue int
+	highestValue = -1
+	lowestValue = int(^uint(0) >> 1)
+
 	for it := 0; it < iterations; it++ {
 		fmt.Printf("\nIteration %d:\n", it+1)
 
-		// Print population and their objective function values at the beginning of each iteration
 		for i := 0; i < n; i++ {
 			fmt.Printf("\nIndividual %d:\n", population[i].ID)
 			PrintTables(population[i].Tables)
@@ -516,6 +520,17 @@ func main() {
 		objectiveValues := make([]int, n)
 		for i := 0; i < n; i++ {
 			objectiveValues[i] = population[i].ObjectiveFunc
+
+			if objectiveValues[i] > highestValue {
+				highestValue = objectiveValues[i]
+				highestIndividual = population[i]
+				highestIter = it + 1
+			}
+			if objectiveValues[i] < lowestValue {
+				lowestValue = objectiveValues[i]
+				lowestIndividual = population[i]
+				lowestIter = it + 1
+			}
 		}
 
 		fitnessValues := CalculateFitness(objectiveValues)
@@ -544,4 +559,9 @@ func main() {
 		children := Crossover(selectedParents)
 		population = Mutation(children)
 	}
+
+	fmt.Printf("\nThe worst individual is %d in Iteration %d with objective function value %d.\n",
+		highestIndividual.ID, highestIter, highestValue)
+	fmt.Printf("The best individual is %d in Iteration %d with objective function value %d.\n",
+		lowestIndividual.ID, lowestIter, lowestValue)
 }
