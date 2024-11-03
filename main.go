@@ -492,6 +492,8 @@ func main() {
 	fmt.Println("Enter the number of iterations: ")
 	fmt.Scanln(&iterations)
 
+	startTime := time.Now()
+
 	population := make([]Individual, n)
 	for i := 0; i < n; i++ {
 		tables := GenerateTable()
@@ -564,4 +566,8 @@ func main() {
 		highestIndividual.ID, highestIter, highestValue)
 	fmt.Printf("The best individual is %d in Iteration %d with objective function value %d.\n",
 		lowestIndividual.ID, lowestIter, lowestValue)
+
+	elapsedTime := time.Since(startTime)
+	fmt.Printf("\nDone executing %d population for %d iterations in %s\n", n, iterations, elapsedTime)
+
 }
