@@ -45,10 +45,19 @@ func plotHistory(data []float64, folder, filename, xlabel, ylabel string) (strin
 
     return filePath, nil // Return the filename and nil for no error
 }
+func printCube(cube models.Cube) {
+    for tableIdx, table := range cube.Tables {
+        fmt.Printf("aaaTable %d:\n", tableIdx+1)
+        for rowIdx, row := range table {
+            fmt.Printf("Row %d: %v\n", rowIdx+1, row)
+        }
+        fmt.Println()
+    }
+}
 
 func SimulatedAnnealingHandler(w http.ResponseWriter, r *http.Request) {
     initialCube := models.GenerateCube()
-
+    printCube(initialCube)
     // Run the Simulated Annealing algorithm
     initialState, finalState, energyHistory, acceptanceProbHistory, duration, stuckCount, initialEnergy, totalIterations := simulated_annealing.SimulatedAnnealing(initialCube)
 
@@ -89,6 +98,7 @@ func SimulatedAnnealingHandler(w http.ResponseWriter, r *http.Request) {
         AcceptanceProbPlot:      acceptanceProbPlot,
         FinalObjectiveVal:       finalState.Energy,
     }
+    printCube(initialCube)
 
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(response)
