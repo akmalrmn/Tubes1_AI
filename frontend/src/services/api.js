@@ -1,10 +1,10 @@
-export async function runGeneticAlgorithm(initialState, populationSize, generations) {
+export async function runGeneticAlgorithm(populationSize, generations) {
     const response = await fetch('http://localhost:8070/api/genetic-algorithm', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ initialState, populationSize, generations }),
+        body: JSON.stringify({ populationSize, generations }),
     });
     return response.json();
 }

@@ -6,6 +6,7 @@ import (
     "magic-cube-solver/internal/models"
     "magic-cube-solver/internal/algorithms/simulated_annealing"
     "magic-cube-solver/internal/algorithms/steepest_ascent"
+    "magic-cube-solver/internal/algorithms/genetic_algorithm"
     "net/http"
     "gonum.org/v1/plot"
     "gonum.org/v1/plot/plotter"
@@ -111,6 +112,54 @@ func SteepestAscentHandler(w http.ResponseWriter, r *http.Request) {
         TotalIterations:   totalIterations,
         ObjectivePlot:     objectivePlot,
         FinalObjectiveVal: finalState.ObjectiveValue,
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response)
+}
+
+type GeneticAlgorithmResponse struct {
+    HighestIndividual struct {
+        ID            int           `json:"id"`
+        Tables        [][][]string  `json:"tables"`
+        ObjectiveFunc int           `json:"objectiveFunc"`
+    } `json:"highestIndividual"`
+    LowestIndividual struct {
+        ID            int           `json:"id"`
+        Tables        [][][]string  `json:"tables"`
+        ObjectiveFunc int           `json:"objectiveFunc"`
+    } `json:"lowestIndividual"`
+    ObjectiveHistory   []float64 `json:"objectiveHistory"`
+    Duration          string     `json:"duration"`
+    TotalIterations   int        `json:"totalIterations"`
+    FinalObjectiveVal int        `json:"finalObjectiveVal"`
+}
+
+func GeneticAlgorithmHandler(w http.ResponseWriter, r *http.Request) {
+    highestIndividual, lowestIndividual, objectiveHistory, duration, totalIterations := genetic_algorithm.RunGeneticAlgorithm(4, 100)
+
+    // Generate plot
+    objectivePlot, err := plotHistory(objectiveHistory, "objective_history.png", "Iterations", "Objective Value")
+    if err != nil {
+        fmt.Println("Error generating objective plot:", err)
+    }
+
+    response := struct {
+        HighestIndividual  genetic_algorithm.Individual `json:"highestIndividual"`
+        LowestIndividual   genetic_algorithm.Individual `json:"lowestIndividual"`
+        ObjectiveHistory   []float64                    `json:"objectiveHistory"`
+        Duration           string                       `json:"duration"`
+        TotalIterations    int                          `json:"totalIterations"`
+        ObjectivePlot      string                       `json:"objectivePlot"`
+        FinalObjectiveVal  int                          `json:"finalObjectiveVal"`
+    }{
+        HighestIndividual:  highestIndividual,
+        LowestIndividual:   lowestIndividual,
+        ObjectiveHistory:   objectiveHistory,
+        Duration:           fmt.Sprintf("%.3f", duration.Seconds()),
+        TotalIterations:    totalIterations,
+        ObjectivePlot:      objectivePlot,
+        FinalObjectiveVal:  lowestIndividual.ObjectiveFunc,
     }
 
     w.Header().Set("Content-Type", "application/json")
