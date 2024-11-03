@@ -29,12 +29,11 @@ func SteepestAscent(maxIterations int, targetSum int) (State, State, time.Durati
 
 		if improved {
 			current = bestNeighbor
-			fmt.Printf("\nIteration %d: Objective Value = %.0f (Improved)\n", i+1, current.ObjectiveValue)
+			fmt.Printf("\nIteration %d: Objective Value = %.0f\n", i+1, current.ObjectiveValue)
 			for _, message := range swapMessages {
 				fmt.Println("   " + message)
 			}
 		} else {
-			fmt.Printf("\nIteration %d: Objective Value = %.0f (No Improvement)\n", i+1, current.ObjectiveValue)
 			break
 		}
 	}
@@ -45,7 +44,6 @@ func SteepestAscent(maxIterations int, targetSum int) (State, State, time.Durati
 }
 
 func findBestNeighbor(current State) (State, bool, []string) {
-	bestNeighbor := current
 	improved := false
 	swapMessages := []string{}
 
@@ -83,7 +81,6 @@ func findBestNeighbor(current State) (State, bool, []string) {
 
 	return bestNeighbor, improved, swapMessages
 }
-
 
 func copyCube(cube models.Cube) models.Cube {
 	newCube := models.Cube{
