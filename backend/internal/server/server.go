@@ -6,7 +6,8 @@ import (
 )
 
 func StartServer() {
+    http.HandleFunc("/api/simulated-annealing", handlers.SimulatedAnnealingHandler)
+    http.HandleFunc("/api/steepest-ascent", handlers.SteepestAscentHandler)
     http.HandleFunc("/api/genetic-algorithm", handlers.GeneticAlgorithmHandler)
-    http.HandleFunc("/api/anies", handlers.SimulatedAnnealingHandler)
     http.ListenAndServe(":8070", nil)
 }
