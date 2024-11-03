@@ -5,6 +5,7 @@ import (
     "fmt"
     "magic-cube-solver/internal/models"
     "magic-cube-solver/internal/algorithms/simulated_annealing"
+    "magic-cube-solver/internal/algorithms/steepest_ascent"
     "net/http"
     "gonum.org/v1/plot"
     "gonum.org/v1/plot/plotter"
@@ -79,6 +80,37 @@ func SimulatedAnnealingHandler(w http.ResponseWriter, r *http.Request) {
         EnergyPlot:              energyPlot,
         AcceptanceProbPlot:      acceptanceProbPlot,
         FinalObjectiveVal:       finalState.Energy,
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response)
+}
+
+func SteepestAscentHandler(w http.ResponseWriter, r *http.Request) {
+    initialState, finalState, objectiveHistory, duration, totalIterations := steepest_ascent.SteepestAscent(10000)
+
+    // Generate plot
+    objectivePlot, err := plotHistory(objectiveHistory, "objective_history.png", "Iterations", "Objective Value")
+    if err != nil {
+        fmt.Println("Error generating objective plot:", err)
+    }
+
+    response := struct {
+        InitialState      steepest_ascent.State `json:"initialState"`
+        FinalState        steepest_ascent.State `json:"finalState"`
+        ObjectiveHistory  []float64             `json:"objectiveHistory"`
+        Duration          string                `json:"duration"`
+        TotalIterations   int                   `json:"totalIterations"`
+        ObjectivePlot     string                `json:"objectivePlot"`
+        FinalObjectiveVal float64               `json:"finalObjectiveVal"`
+    }{
+        InitialState:      initialState,
+        FinalState:        finalState,
+        ObjectiveHistory:  objectiveHistory,
+        Duration:          fmt.Sprintf("%.3f", duration.Seconds()),
+        TotalIterations:   totalIterations,
+        ObjectivePlot:     objectivePlot,
+        FinalObjectiveVal: finalState.ObjectiveValue,
     }
 
     w.Header().Set("Content-Type", "application/json")

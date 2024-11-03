@@ -7,5 +7,6 @@ import (
 
 func StartServer() {
     http.HandleFunc("/api/simulated-annealing", handlers.SimulatedAnnealingHandler)
+    http.HandleFunc("/api/steepest-ascent", handlers.SteepestAscentHandler)
     http.ListenAndServe(":8070", nil)
 }

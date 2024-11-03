@@ -18,3 +18,14 @@ export async function runSimulatedAnnealing() {
     });
     return response.json();
 }
+
+export async function runSteepestAscent(maxIterations, targetSum) {
+    const response = await fetch('http://localhost:8070/api/steepest-ascent', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ maxIterations, targetSum }),
+    });
+    return response.json();
+}
