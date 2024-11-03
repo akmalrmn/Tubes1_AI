@@ -1,0 +1,221 @@
+.expand-container {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: -50px;
+}
+
+.cube-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+.expand-cube {
+    width: 300px;
+    height: 60px; 
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(-30deg) rotateY(-45deg);
+}
+
+@keyframes moveCube1 {
+    from {
+      transform: translateX(0) translateY(0);
+    }
+    to {
+      transform: translateX(-500px) translateY(-50px);
+    }
+  }
+
+#cube1 {
+    z-index: 20;
+    margin-bottom: -500px;
+    animation: moveCube1 2s forwards; 
+}
+
+@keyframes moveCube2 {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-100px);
+    }
+  }
+
+#cube2 {
+    z-index: 19;
+    margin-bottom: -500px;
+    animation: moveCube2 2s forwards;
+}
+
+@keyframes moveCube3 {
+    from {
+      transform: translateX(0) translateY(0);
+    }
+    to {
+      transform: translateX(500px) translateY(-150px);
+    }
+  }
+
+#cube3 {
+    z-index: 18;
+    margin-bottom: -500px;
+    animation: moveCube3 2s forwards;
+}
+
+@keyframes moveCube4 {
+    from {
+      transform: translateX(0) translateY(0);
+    }
+    to {
+      transform: translateX(-250px) translateY(100px);
+    }
+  }
+
+#cube4 {
+    z-index: 17;
+    margin-bottom: -500px;
+    animation: moveCube4 2s forwards;
+}
+
+@keyframes moveCube5 {
+    from {
+      transform: translateX(0) translateY(0);
+    }
+    to {
+      transform: translateX(250px) translateY(50px);
+    }
+  }
+
+#cube5 {
+    z-index: 16;
+    animation: moveCube5 2s forwards;
+}
+
+.face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    backface-visibility: hidden;
+  }
+
+.expand-cube .face.front  { transform: translateZ(150px); }
+.expand-cube .face.back   { transform: rotateY(180deg) translateZ(150px); }
+.expand-cube .face.left   { transform: rotateY(-90deg) translateZ(150px); }
+.expand-cube .face.right  { transform: rotateY(90deg) translateZ(150px); }
+.expand-cube .face.top    { transform: rotateX(90deg) translateZ(150px);}
+.expand-cube .face.bottom { transform: rotateX(-90deg) translateZ(-90px); }
+
+.expand-cube .face.top {
+    height: 300px !important;
+}
+
+.expand-cube .face.bottom {
+    height: 300px !important;
+}
+
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.grid-row {
+    display: flex;
+}
+
+.grid-cell {
+    width: 58.5px;
+    height: 58.5px;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cube-button {
+    z-index: 1000;
+}
+
+.cube-button button {
+    cursor: pointer;
+}
+
+@keyframes moveBackCube1 {
+    from {
+        transform: translateX(-500px) translateY(-50px);
+    }
+    to {
+      transform: translateX(0) translateY(0);
+    }
+  }
+  
+  .move-back #cube1 {
+    animation: moveBackCube1 2s forwards;
+  }
+
+  @keyframes moveBackCube2 {
+    from {
+        transform: translateY(-100px);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  
+  .move-back #cube2 {
+    animation: moveBackCube2 2s forwards;
+  }
+
+  @keyframes moveBackCube3 {
+    from {
+        transform: translateX(500px) translateY(-125px);
+    }
+    to {
+      transform: translateX(0) translateY(0);
+    }
+  }
+  
+  .move-back #cube3 {
+    animation: moveBackCube3 2s forwards;
+  }
+
+  @keyframes moveBackCube4 {
+    from {
+        transform: translateX(-250px) translateY(100px);
+    }
+    to {
+      transform: translateX(0) translateY(0);
+    }
+  }
+
+  .move-back #cube4 {
+    animation: moveBackCube4 2s forwards;
+  }
+
+  @keyframes moveBackCube5 {
+    from {
+        transform: translateX(250px) translateY(65px);
+    }
+    to {
+      transform: translateX(0) translateY(0);
+    }
+  }
+  
+  .move-back #cube5 {
+    animation: moveBackCube5 2s forwards;
+  }
