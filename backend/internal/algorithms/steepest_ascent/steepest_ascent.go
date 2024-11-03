@@ -44,42 +44,48 @@ func SteepestAscent(maxIterations int, targetSum int) (State, State, time.Durati
 }
 
 func findBestNeighbor(current State) (State, bool, []string) {
-	improved := false
-	swapMessages := []string{}
+    bestNeighbor := current
+    improved := false
+    lastSwaps := make(map[string]string)
 
-	for tableIdx1 := 0; tableIdx1 < models.NumTables; tableIdx1++ {
-		for rowIdx1 := 0; rowIdx1 < models.Rows; rowIdx1++ {
-			for colIdx1 := 0; colIdx1 < models.Cols; colIdx1++ {
-				for tableIdx2 := 0; tableIdx2 < models.NumTables; tableIdx2++ {
-					for rowIdx2 := 0; rowIdx2 < models.Rows; rowIdx2++ {
-						for colIdx2 := 0; colIdx2 < models.Cols; colIdx2++ {
-							if tableIdx1 == tableIdx2 && rowIdx1 == rowIdx2 && colIdx1 == colIdx2 {
-								continue
-							}
+    for tableIdx1 := 0; tableIdx1 < models.NumTables; tableIdx1++ {
+        for rowIdx1 := 0; rowIdx1 < models.Rows; rowIdx1++ {
+            for colIdx1 := 0; colIdx1 < models.Cols; colIdx1++ {
+                for tableIdx2 := 0; tableIdx2 < models.NumTables; tableIdx2++ {
+                    for rowIdx2 := 0; rowIdx2 < models.Rows; rowIdx2++ {
+                        for colIdx2 := 0; colIdx2 < models.Cols; colIdx2++ {
+                            if tableIdx1 == tableIdx2 && rowIdx1 == rowIdx2 && colIdx1 == colIdx2 {
+                                continue
+                            }
 
-							neighborCube := copyCube(current.Cube)
-							val1 := neighborCube.Tables[tableIdx1][rowIdx1][colIdx1]
-							val2 := neighborCube.Tables[tableIdx2][rowIdx2][colIdx2]
-							neighborCube.Tables[tableIdx1][rowIdx1][colIdx1], neighborCube.Tables[tableIdx2][rowIdx2][colIdx2] = val2, val1
+                            neighborCube := copyCube(current.Cube)
+                            val1 := neighborCube.Tables[tableIdx1][rowIdx1][colIdx1]
+                            val2 := neighborCube.Tables[tableIdx2][rowIdx2][colIdx2]
+                            neighborCube.Tables[tableIdx1][rowIdx1][colIdx1], neighborCube.Tables[tableIdx2][rowIdx2][colIdx2] = val2, val1
 
-							neighborObjectiveValue := -models.EvaluateIndividual(flattenCube(neighborCube))
+                            neighborObjectiveValue := -models.EvaluateIndividual(flattenCube(neighborCube))
 
-							if neighborObjectiveValue < bestNeighbor.ObjectiveValue {
-								bestNeighbor = State{Cube: neighborCube, ObjectiveValue: neighborObjectiveValue}
-								improved = true
+                            if neighborObjectiveValue < bestNeighbor.ObjectiveValue {
+                                bestNeighbor = State{Cube: neighborCube, ObjectiveValue: neighborObjectiveValue}
+                                improved = true
 
-								val1Float, _ := strconv.ParseFloat(val1, 64)
-								val2Float, _ := strconv.ParseFloat(val2, 64)
-								swapMessages = append(swapMessages, fmt.Sprintf("Swapped value %.0f at Table %d Position (%d, %d) with value %.0f at Table %d Position (%d, %d)", val1Float, tableIdx1+1, rowIdx1+1, colIdx1+1, val2Float, tableIdx2+1, rowIdx2+1, colIdx2+1))
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+                                swapMessage := fmt.Sprintf("Swapped value %s at Table %d Position (%d, %d) with value %s at Table %d Position (%d, %d)",
+                                    val1, tableIdx1+1, rowIdx1+1, colIdx1+1, val2, tableIdx2+1, rowIdx2+1, colIdx2+1)
+                                lastSwaps[fmt.Sprintf("%d,%d,%d", tableIdx1, rowIdx1, colIdx1)] = swapMessage
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	return bestNeighbor, improved, swapMessages
+    swapMessages := make([]string, 0, len(lastSwaps))
+    for _, message := range lastSwaps {
+        swapMessages = append(swapMessages, message)
+    }
+
+    return bestNeighbor, improved, swapMessages
 }
 
 func copyCube(cube models.Cube) models.Cube {
