@@ -66,10 +66,9 @@ func findBestNeighbor(current State) (State, bool) {
 								bestNeighbor = State{Cube: neighborCube, ObjectiveValue: neighborObjectiveValue}
 								improved = true
 
-								fmt.Printf("   Swapping positions:\n")
-								fmt.Printf("  	  Position 1: Table %d, Row %d, Column %d (Value %s)\n", tableIdx1, rowIdx1, colIdx1, val1)
-								fmt.Printf("  	  Position 2: Table %d, Row %d, Column %d (Value %s)\n", tableIdx2, rowIdx2, colIdx2, val2)
-								fmt.Printf("  	  New Objective Value: %.0f\n", neighborObjectiveValue)
+								val1Float, _ := strconv.ParseFloat(val1, 64)
+								val2Float, _ := strconv.ParseFloat(val2, 64)
+								fmt.Printf("   Swapped value %.0f at Table %d Position (%d, %d) with value %.0f at Table %d Position (%d, %d)\n", val1Float, tableIdx1+1, rowIdx1+1, colIdx1+1, val2Float, tableIdx2+1, rowIdx2+1, colIdx2+1)
 							}
 						}
 					}
