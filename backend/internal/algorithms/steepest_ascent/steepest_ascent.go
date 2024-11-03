@@ -25,15 +25,18 @@ func SteepestAscent(maxIterations int, targetSum int) (State, State, time.Durati
 	current := initial
 
 	for i := 0; i < maxIterations; i++ {
-		bestNeighbor, improved := findBestNeighbor(current)
+		bestNeighbor, improved, swapMessages := findBestNeighbor(current)
 
-		if !improved {
+		if improved {
+			current = bestNeighbor
+			fmt.Printf("\nIteration %d: Objective Value = %.0f (Improved)\n", i+1, current.ObjectiveValue)
+			for _, message := range swapMessages {
+				fmt.Println("   " + message)
+			}
+		} else {
+			fmt.Printf("\nIteration %d: Objective Value = %.0f (No Improvement)\n", i+1, current.ObjectiveValue)
 			break
 		}
-
-		current = bestNeighbor
-
-		fmt.Printf("\nIteration %d: Objective Value = %.0f\n", i+1, current.ObjectiveValue)
 	}
 
 	duration := time.Since(startTime)
@@ -41,10 +44,10 @@ func SteepestAscent(maxIterations int, targetSum int) (State, State, time.Durati
 	return initial, current, duration
 }
 
-func findBestNeighbor(current State) (State, bool) {
+func findBestNeighbor(current State) (State, bool, []string) {
 	bestNeighbor := current
 	improved := false
-	lastSwaps := make(map[string]string)
+	swapMessages := []string{}
 
 	for tableIdx1 := 0; tableIdx1 < models.NumTables; tableIdx1++ {
 		for rowIdx1 := 0; rowIdx1 < models.Rows; rowIdx1++ {
@@ -69,7 +72,7 @@ func findBestNeighbor(current State) (State, bool) {
 
 								val1Float, _ := strconv.ParseFloat(val1, 64)
 								val2Float, _ := strconv.ParseFloat(val2, 64)
-								lastSwaps[fmt.Sprintf("%d,%d,%d", tableIdx1, rowIdx1, colIdx1)] = fmt.Sprintf("Swapped value %.0f at Table %d Position (%d, %d) with value %.0f at Table %d Position (%d, %d)", val1Float, tableIdx1+1, rowIdx1+1, colIdx1+1, val2Float, tableIdx2+1, rowIdx2+1, colIdx2+1)
+								swapMessages = append(swapMessages, fmt.Sprintf("Swapped value %.0f at Table %d Position (%d, %d) with value %.0f at Table %d Position (%d, %d)", val1Float, tableIdx1+1, rowIdx1+1, colIdx1+1, val2Float, tableIdx2+1, rowIdx2+1, colIdx2+1))
 							}
 						}
 					}
@@ -78,12 +81,9 @@ func findBestNeighbor(current State) (State, bool) {
 		}
 	}
 
-	for _, message := range lastSwaps {
-		fmt.Println("   " + message)
-	}
-
-	return bestNeighbor, improved
+	return bestNeighbor, improved, swapMessages
 }
+
 
 func copyCube(cube models.Cube) models.Cube {
 	newCube := models.Cube{
