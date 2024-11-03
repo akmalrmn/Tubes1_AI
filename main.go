@@ -107,16 +107,13 @@ func SumColumns(tables [][][]string) int {
 			}
 			abs_sum := abs(315 - sum)
 			totalAbsSumColumns += abs_sum
-			// fmt.Printf("Col %d (Table %d): %d %d\n", col+1+(tableIdx*cols), tableIdx+1, sum, abs_sum)
 		}
 	}
 
-	// fmt.Printf("totalAbsSumColumns: %d\n", totalAbsSumColumns)
 	return totalAbsSumColumns
 }
 
 func SumRows(tables [][][]string) int {
-	// fmt.Println("\nRow Sums:")
 	totalAbsSumRows := 0
 
 	for tableIdx := 0; tableIdx < numTables; tableIdx++ {
@@ -128,16 +125,13 @@ func SumRows(tables [][][]string) int {
 			}
 			abs_sum := abs(315 - sum)
 			totalAbsSumRows += abs_sum
-			// fmt.Printf("Row %d (Table %d): %d %d\n", row+1+(tableIdx*rows), tableIdx+1, sum, abs_sum)
 		}
 	}
 
-	// fmt.Printf("totalAbsSumRows: %d\n", totalAbsSumRows)
 	return totalAbsSumRows
 }
 
 func SumPoles(tables [][][]string) int {
-	// fmt.Println("\nPole Sums:")
 	totalAbsSumPoles := 0
 
 	for pole := 0; pole < rows*cols; pole++ {
@@ -150,10 +144,8 @@ func SumPoles(tables [][][]string) int {
 		}
 		abs_sum := abs(315 - sum)
 		totalAbsSumPoles += abs_sum
-		// fmt.Printf("Pole %d: %d %d\n", pole+1, sum, abs_sum)
 	}
 
-	// fmt.Printf("totalAbsSumPoles: %d\n", totalAbsSumPoles)
 	return totalAbsSumPoles
 }
 
@@ -430,23 +422,20 @@ func Mutation(children []Individual) []Individual {
 	rand.Seed(time.Now().UnixNano())
 	mutationTimes := rand.Intn(6) + 10 // Random number between 10 and 15
 
-	// To store unique mutation points
 	mutationPoints := make(map[[2]int]struct{})
 	for len(mutationPoints) < mutationTimes {
 		tableIdx := rand.Intn(numTables)
 		rowIdx := rand.Intn(rows)
 		colIdx := rand.Intn(cols)
-		point := [2]int{tableIdx, rowIdx*cols + colIdx} // Store in flat index
-		mutationPoints[point] = struct{}{}              // Using struct{} as a value type for uniqueness
+		point := [2]int{tableIdx, rowIdx*cols + colIdx}
+		mutationPoints[point] = struct{}{}
 	}
 
-	// Convert mutationPoints map to a slice for easier iteration
 	pointsSlice := make([][2]int, 0, len(mutationPoints))
 	for point := range mutationPoints {
 		pointsSlice = append(pointsSlice, point)
 	}
 
-	// Perform mutation for each child using the same mutation points
 	for i, child := range children {
 		fmt.Printf("Mutating Child %d:\n", child.ID)
 
@@ -455,40 +444,32 @@ func Mutation(children []Individual) []Individual {
 			originalColIdx := point[1] % cols
 			originalRowIdx := point[1] / cols
 
-			// Randomly select a target mutation point from a different table
 			var targetTableIdx, targetRowIdx, targetColIdx int
-
 			for {
 				targetTableIdx = rand.Intn(numTables)
 				targetRowIdx = rand.Intn(rows)
 				targetColIdx = rand.Intn(cols)
 
-				// Ensure we are not swapping with the same point
 				if targetTableIdx != sourceTableIdx ||
 					(targetTableIdx == sourceTableIdx && (targetRowIdx != originalRowIdx || targetColIdx != originalColIdx)) {
 					break
 				}
 			}
 
-			// Swap the values
 			sourceValue := child.Tables[sourceTableIdx][originalRowIdx][originalColIdx]
 			targetValue := child.Tables[targetTableIdx][targetRowIdx][targetColIdx]
 
-			// Perform the swap
 			child.Tables[sourceTableIdx][originalRowIdx][originalColIdx] = targetValue
 			child.Tables[targetTableIdx][targetRowIdx][targetColIdx] = sourceValue
 
-			// Print the swap details with the values
 			fmt.Printf("Swapped value %s at Table %d Position (%d, %d) with value %s at Table %d Position (%d, %d)\n",
 				sourceValue, sourceTableIdx+1, originalRowIdx+1, originalColIdx+1,
 				targetValue, targetTableIdx+1, targetRowIdx+1, targetColIdx+1)
 		}
 
-		// Calculate and print the objective function value after mutation
 		child.ObjectiveFunc = CalculateObjectiveFunction(child.Tables)
 		fmt.Printf("Objective Function Value for Mutated Child %d: %d\n\n", child.ID, child.ObjectiveFunc)
 
-		// Print the mutated child's tables
 		fmt.Printf("Mutated Child %d\n", child.ID)
 		for tableIdx, table := range child.Tables {
 			fmt.Printf("Table %d:\n", tableIdx+1)
@@ -498,61 +479,69 @@ func Mutation(children []Individual) []Individual {
 			fmt.Println()
 		}
 
-		// Assign the mutated child back to the children slice
 		children[i] = child
 	}
 
-	// Return the mutated children
 	return children
 }
 
 func main() {
-	var n int
+	var n, iterations int
 	fmt.Println("Enter the number of individuals (population size): ")
 	fmt.Scanln(&n)
+	fmt.Println("Enter the number of iterations: ")
+	fmt.Scanln(&iterations)
 
 	population := make([]Individual, n)
-	objectiveValues := make([]int, n)
-
 	for i := 0; i < n; i++ {
-		fmt.Printf("\nIndividual %d:\n", i+1)
 		tables := GenerateTable()
-		PrintTables(tables)
 		objectiveFunctionValue := CalculateObjectiveFunction(tables)
-		objectiveValues[i] = objectiveFunctionValue
 		population[i] = Individual{
 			ID:            i + 1,
 			Tables:        tables,
 			ObjectiveFunc: objectiveFunctionValue,
 		}
-		fmt.Printf("Objective Function Value for Individual %d: %d\n", i+1, objectiveFunctionValue)
 	}
 
-	fitnessValues := CalculateFitness(objectiveValues)
-	fmt.Println()
+	for it := 0; it < iterations; it++ {
+		fmt.Printf("\nIteration %d:\n", it+1)
 
-	for i := 1; i <= n; i++ {
-		fmt.Printf("Fitness Percentage for Individual %d: %.2f%%\n", i, fitnessValues[i-1])
-	}
-
-	selectedIndices := RouletteWheelSelection(fitnessValues, n)
-
-	selectedParents := make([]Individual, n)
-	fmt.Printf("\nSelected Individuals: ")
-	for i, idx := range selectedIndices {
-		selectedParents[i] = population[idx]
-		if i != 0 {
-			fmt.Print(", ")
+		// Print population and their objective function values at the beginning of each iteration
+		for i := 0; i < n; i++ {
+			fmt.Printf("\nIndividual %d:\n", population[i].ID)
+			PrintTables(population[i].Tables)
+			fmt.Printf("Objective Function Value for Individual %d: %d\n", population[i].ID, population[i].ObjectiveFunc)
 		}
-		fmt.Printf("%d", idx+1)
-	}
-	fmt.Println()
 
-	for _, idx := range selectedIndices {
-		fmt.Printf("Individual %d with objective function value %d selected.\n", idx+1, objectiveValues[idx])
-	}
+		objectiveValues := make([]int, n)
+		for i := 0; i < n; i++ {
+			objectiveValues[i] = population[i].ObjectiveFunc
+		}
 
-	fmt.Println()
-	children := Crossover(selectedParents)
-	Mutation(children)
+		fitnessValues := CalculateFitness(objectiveValues)
+		fmt.Println()
+		for i := 1; i <= n; i++ {
+			fmt.Printf("Fitness Percentage for Individual %d: %.2f%%\n", i, fitnessValues[i-1])
+		}
+
+		selectedIndices := RouletteWheelSelection(fitnessValues, n)
+		selectedParents := make([]Individual, n)
+		fmt.Printf("\nSelected Individuals: ")
+		for i, idx := range selectedIndices {
+			selectedParents[i] = population[idx]
+			if i != 0 {
+				fmt.Print(", ")
+			}
+			fmt.Printf("%d", idx+1)
+		}
+		fmt.Println()
+
+		for _, idx := range selectedIndices {
+			fmt.Printf("Individual %d with objective function value %d selected.\n", idx+1, objectiveValues[idx])
+		}
+
+		fmt.Println()
+		children := Crossover(selectedParents)
+		population = Mutation(children)
+	}
 }
