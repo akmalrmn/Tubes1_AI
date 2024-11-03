@@ -11,9 +11,16 @@ import (
     "gonum.org/v1/plot"
     "gonum.org/v1/plot/plotter"
     "gonum.org/v1/plot/vg"
+    "os"
+    "path/filepath"
 )
 
-func plotHistory(data []float64, filename, xlabel, ylabel string) (string, error) {
+func plotHistory(data []float64, folder, filename, xlabel, ylabel string) (string, error) {
+    if err := os.MkdirAll(folder, os.ModePerm); err != nil {
+        return "", err
+    }
+
+    filePath := filepath.Join(folder, filename)
     p := plot.New()
 
     p.Title.Text = fmt.Sprintf("%s over Iterations", ylabel)
@@ -32,11 +39,11 @@ func plotHistory(data []float64, filename, xlabel, ylabel string) (string, error
     }
     p.Add(line)
 
-    if err := p.Save(4*vg.Inch, 4*vg.Inch, filename); err != nil {
+    if err := p.Save(4*vg.Inch, 4*vg.Inch, filePath); err != nil {
         return "", err // Return an error instead of panicking
     }
 
-    return filename, nil // Return the filename and nil for no error
+    return filePath, nil // Return the filename and nil for no error
 }
 
 func SimulatedAnnealingHandler(w http.ResponseWriter, r *http.Request) {
@@ -46,12 +53,12 @@ func SimulatedAnnealingHandler(w http.ResponseWriter, r *http.Request) {
     initialState, finalState, energyHistory, acceptanceProbHistory, duration, stuckCount, initialEnergy, totalIterations := simulated_annealing.SimulatedAnnealing(initialCube)
 
     // Generate plots
-    energyPlot, err := plotHistory(energyHistory, "energy_history.png", "Iterations", "Current State Energy")
+    energyPlot, err := plotHistory(energyHistory, "plots/simulated-annealing", "energy_history.png", "Iterations", "Current State Energy")
     if err != nil {
         fmt.Println("Error generating energy plot:", err)
     }
 
-    acceptanceProbPlot, err := plotHistory(acceptanceProbHistory, "acceptance_prob_history.png", "Iterations", "e^(deltaE/T)")
+    acceptanceProbPlot, err := plotHistory(acceptanceProbHistory, "plots/simulated-annealing","acceptance_prob_history.png", "Iterations", "e^(deltaE/T)")
     if err != nil {
         fmt.Println("Error generating acceptance probability plot:", err)
     }
@@ -91,7 +98,7 @@ func SteepestAscentHandler(w http.ResponseWriter, r *http.Request) {
     initialState, finalState, objectiveHistory, duration, totalIterations := steepest_ascent.SteepestAscent(10000)
 
     // Generate plot
-    objectivePlot, err := plotHistory(objectiveHistory, "objective_history.png", "Iterations", "Objective Value")
+    objectivePlot, err := plotHistory(objectiveHistory, "plots/steepest-ascent","objective_history.png", "Iterations", "Objective Value")
     if err != nil {
         fmt.Println("Error generating objective plot:", err)
     }
@@ -139,7 +146,7 @@ func GeneticAlgorithmHandler(w http.ResponseWriter, r *http.Request) {
     highestIndividual, lowestIndividual, objectiveHistory, duration, totalIterations := genetic_algorithm.RunGeneticAlgorithm(4, 100)
 
     // Generate plot
-    objectivePlot, err := plotHistory(objectiveHistory, "objective_history.png", "Iterations", "Objective Value")
+    objectivePlot, err := plotHistory(objectiveHistory, "plots/genetic-algorithm", "objective_history.png", "Iterations", "Objective Value")
     if err != nil {
         fmt.Println("Error generating objective plot:", err)
     }

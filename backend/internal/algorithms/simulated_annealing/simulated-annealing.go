@@ -40,7 +40,7 @@ func SimulatedAnnealing(initialCube models.Cube) (State, State, []float64, []flo
             break
         }
 
-        neighbor, tableIdx1, rowIdx1, colIdx1, tableIdx2, rowIdx2, colIdx2, oldValue1, oldValue2 := generateNeighbor(current)
+        neighbor := generateNeighbor(current)
         neighborEnergy := models.EvaluateIndividual(neighbor.Cube)
         acceptanceProb := 0.0
 
@@ -66,10 +66,10 @@ func SimulatedAnnealing(initialCube models.Cube) (State, State, []float64, []flo
             }
         }
 
-        fmt.Printf("Iteration %d: Swapped value at Table %d, Row %d, Col %d from %s to %s with value at Table %d, Row %d, Col %d from %s to %s (Acceptance Probability: %f)\n", 
-            iteration+1, tableIdx1+1, rowIdx1+1, colIdx1+1, oldValue1, neighbor.Cube.Tables[tableIdx1][rowIdx1][colIdx1], 
-            tableIdx2+1, rowIdx2+1, colIdx2+1, oldValue2, neighbor.Cube.Tables[tableIdx2][rowIdx2][colIdx2], acceptanceProb)
-        fmt.Printf("Iteration %d: Current State Energy: %f, Temperature: %f\n", iteration+1, current.Energy, temp)
+        // fmt.Printf("Iteration %d: Swapped value at Table %d, Row %d, Col %d from %s to %s with value at Table %d, Row %d, Col %d from %s to %s (Acceptance Probability: %f)\n", 
+        //     iteration+1, tableIdx1+1, rowIdx1+1, colIdx1+1, oldValue1, neighbor.Cube.Tables[tableIdx1][rowIdx1][colIdx1], 
+        //     tableIdx2+1, rowIdx2+1, colIdx2+1, oldValue2, neighbor.Cube.Tables[tableIdx2][rowIdx2][colIdx2], acceptanceProb)
+        // fmt.Printf("Iteration %d: Current State Energy: %f, Temperature: %f\n", iteration+1, current.Energy, temp)
 
         if current.Energy == 0 {
             fmt.Println("Magic cube has been built!")
@@ -105,7 +105,7 @@ func SimulatedAnnealing(initialCube models.Cube) (State, State, []float64, []flo
     return current, best, energyHistory, acceptanceProbHistory, formattedDuration, stuckCount, initialEnergy, iteration
 }
 
-func generateNeighbor(state State) (State, int, int, int, int, int, int, string, string) {
+func generateNeighbor(state State) (State) {
     neighbor := state
     tableIdx1 := rand.Intn(models.NumTables)
     rowIdx1 := rand.Intn(models.Rows)
@@ -129,7 +129,8 @@ func generateNeighbor(state State) (State, int, int, int, int, int, int, string,
     neighbor.Cube.Tables[tableIdx2][rowIdx2][colIdx2] = oldValue1
 
     neighbor.Energy = models.EvaluateIndividual(neighbor.Cube)
-    return neighbor, tableIdx1, rowIdx1, colIdx1, tableIdx2, rowIdx2, colIdx2, oldValue1, oldValue2
+    return neighbor
+    // , tableIdx1, rowIdx1, colIdx1, tableIdx2, rowIdx2, colIdx2, oldValue1, oldValue2
 }
 
 func acceptanceProbability(currentEnergy, newEnergy, temperature float64) float64 {
