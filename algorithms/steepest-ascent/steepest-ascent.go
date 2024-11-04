@@ -126,7 +126,7 @@ func flattenCube(cube models.Cube) []int {
 
 func Run() {
 	maxIterations := 1000
-	targetSum := 25
+	targetSum := 315
 	initialState, finalState, duration := SteepestAscent(maxIterations, targetSum)
 
 	fmt.Println("\nInitial Cube State:")
