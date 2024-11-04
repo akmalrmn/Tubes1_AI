@@ -1,10 +1,10 @@
-import React from 'react'
-import '../result/Result.css'
+import React from 'react';
+import '../result/Result.css';
 
-const Result = () => {
+const Result = ({ algorithmData }) => {
   return (
     null
   )
 }
 
-export default Result
+export default Result;
