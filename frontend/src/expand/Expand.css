@@ -1,0 +1,299 @@
+  .expand-container {
+    height: 200vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #001F3F;
+  }
+
+  .expand-initial {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .initial-container {
+    width: 90%;
+    height: 90%;
+    background-color: #072a4d;
+    border: 2px solid #FFF4B7;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .expand-final {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .final-container {
+    width: 90%;
+    height: 90%;
+    background-color: #072a4d;
+    border: 2px solid #FFF4B7;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .expand-box {
+    width: 95%;
+    height: 85%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .cubes-container {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+  }
+
+  .expand-cube {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(-30deg) rotateY(-45deg); 
+  }
+
+  .face {
+    position: absolute;
+    width: 200px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    backface-visibility: hidden;
+  }
+
+  .expand-cube .face.front  { transform: translateZ(100px); }
+  .expand-cube .face.back   { transform: rotateY(180deg) translateZ(120px); }
+  .expand-cube .face.left   { transform: rotateY(-90deg) translateZ(120px); }
+  .expand-cube .face.right  { transform: rotateY(90deg) translateZ(100px); }
+  .expand-cube .face.top    { transform: rotateX(90deg) translateZ(100px); }
+  .expand-cube .face.bottom { transform: rotateX(-90deg) translateZ(120px); }
+
+  .expand-cube .face.top {
+    height: 200px !important;
+  }
+
+  .expand-cube .face.bottom {
+    height: 200px !important;
+  }
+
+  .grid-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  .grid-row {
+    display: flex;
+  }
+
+  .grid-cell {
+    width: 38px !important;
+    height: 38px !important;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cube-button {
+    z-index: 1000;
+  }
+
+  .cube-button button {
+    cursor: pointer;
+  }
+
+@keyframes moveCube1 {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-400px);
+  }
+}
+
+#cube1 {
+  margin-bottom: -165px;
+  z-index: 20;
+  animation: moveCube1 2s forwards;
+}
+
+@keyframes moveCube2 {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50px);
+  }
+}
+
+#cube2 {
+  margin-bottom: -165px;
+  z-index: 19;
+  animation: moveCube2 2s forwards;
+  animation-delay: 2s;
+}
+
+@keyframes moveCube3 {
+  from {
+    transform: translateX(0) translateY(0);
+  }
+  to {
+    transform: translateX(400px) translateY(-70px);
+  }
+}
+
+#cube3 {
+  margin-bottom: -165px;
+  z-index: 18;
+  animation: moveCube3 2s forwards;
+  animation-delay: 4s;
+}
+
+@keyframes moveCube4 {
+  from {
+    transform: translateX(0) translateY(0);
+  }
+  to {
+    transform: translateX(-200px) translateY(150px);
+  }
+}
+
+#cube4 {
+  margin-bottom: -165px;
+  z-index: 17;
+  animation: moveCube4 2s forwards;
+  animation-delay: 6s;
+}
+
+@keyframes moveCube5 {
+  from {
+    transform: translateX(0) translateY(0);
+  }
+  to {
+    transform: translateX(200px) translateY(115px);
+  }
+}
+
+#cube5 {
+  z-index: 16;
+  animation: moveCube5 2s forwards;
+  animation-delay: 8s;
+}
+
+.merge-button {
+  position: fixed;
+  height: 50px;
+  width: 150px;
+  bottom: 50px;
+  z-index: 1000;
+}
+
+.merge-button button {
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
+  border: 2px solid #FFF4B7;
+  color: #FFF4B7;
+  background-color: #001F3F;
+  transition: 0.5s ease;
+}
+
+.merge-button button:hover {
+  background-color: #FFF4B7;
+  color: #001F3F;
+}
+
+@keyframes moveBackCube1 {
+  from {
+    transform: translateX(-400px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+#cube1.move-back {
+  animation: moveBackCube1 2s forwards;
+}
+
+@keyframes moveBackCube2 {
+  from {
+    transform: translateY(-50px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+#cube2.move-back {
+  animation: moveBackCube2 2s forwards;
+}
+
+@keyframes moveBackCube3 {
+  from {
+    transform: translateX(400px) translateY(-70px);
+  }
+  to {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+#cube3.move-back {
+  animation: moveBackCube3 2s forwards;
+}
+
+@keyframes moveBackCube4 {
+  from {
+    transform: translateX(-200px) translateY(150px);
+  }
+  to {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+#cube4.move-back {
+  animation: moveBackCube4 2s forwards;
+}
+
+@keyframes moveBackCube5 {
+  from {
+    transform: translateX(200px) translateY(115px);
+  }
+  to {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+#cube5.move-back {
+  animation: moveBackCube5 2s forwards;
+}

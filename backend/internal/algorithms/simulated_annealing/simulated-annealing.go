@@ -16,7 +16,7 @@ type State struct {
 func SimulatedAnnealing(initialCube models.Cube) (State, State, []float64, []float64, string, int, float64, int) {
     startTime := time.Now()
     current := State{
-        Cube:   initialCube,
+        Cube:   copyCube(initialCube),  
         Energy: models.EvaluateIndividual(initialCube),
     }
 
@@ -40,43 +40,37 @@ func SimulatedAnnealing(initialCube models.Cube) (State, State, []float64, []flo
             break
         }
 
+        // Generate a neighbor state
         neighbor := generateNeighbor(current)
         neighborEnergy := models.EvaluateIndividual(neighbor.Cube)
         acceptanceProb := 0.0
 
+        // Check if the neighbor has a lower energy (better solution)
         if neighborEnergy < current.Energy {
-            current = State{Cube: neighbor.Cube, Energy: neighborEnergy}
+            current = State{Cube: copyCube(neighbor.Cube), Energy: neighborEnergy}
             if current.Energy < best.Energy {
                 best = current
             }
         } else {
             stuckCount++
-
+            
             if temp >= temperatureThreshold {
                 acceptanceProb = acceptanceProbability(current.Energy, neighborEnergy, temp)
                 if acceptanceProb > rand.Float64() {
-                    current = State{Cube: neighbor.Cube, Energy: neighborEnergy}
+                    current = State{Cube: copyCube(neighbor.Cube), Energy: neighborEnergy}
                     if current.Energy < best.Energy {
                         best = current
                     }
                 }
-                if acceptanceProb != 1 {
-                    acceptanceProbHistory = append(acceptanceProbHistory, acceptanceProb)
-                }
+                acceptanceProbHistory = append(acceptanceProbHistory, acceptanceProb)
             }
         }
-
-        // fmt.Printf("Iteration %d: Swapped value at Table %d, Row %d, Col %d from %s to %s with value at Table %d, Row %d, Col %d from %s to %s (Acceptance Probability: %f)\n", 
-        //     iteration+1, tableIdx1+1, rowIdx1+1, colIdx1+1, oldValue1, neighbor.Cube.Tables[tableIdx1][rowIdx1][colIdx1], 
-        //     tableIdx2+1, rowIdx2+1, colIdx2+1, oldValue2, neighbor.Cube.Tables[tableIdx2][rowIdx2][colIdx2], acceptanceProb)
-        // fmt.Printf("Iteration %d: Current State Energy: %f, Temperature: %f\n", iteration+1, current.Energy, temp)
 
         if current.Energy == 0 {
             fmt.Println("Magic cube has been built!")
             break
         }
 
-        // Check for energy stabilization
         if iteration > 0 && energyHistory[iteration-1] == current.Energy {
             stabilizationCount++
             if stabilizationCount >= stabilizationThreshold {
@@ -87,14 +81,8 @@ func SimulatedAnnealing(initialCube models.Cube) (State, State, []float64, []flo
             stabilizationCount = 0
         }
 
-        newTemp := temp * (1 - coolingRate)
-        if newTemp < temperatureThreshold {
-            temp = temperatureThreshold
-            fmt.Println("Temperature reached threshold, will terminate in next iteration.")
-        } else {
-            temp = newTemp
-        }
-        
+        // Update temperature and energy history
+        temp *= (1 - coolingRate)
         energyHistory = append(energyHistory, current.Energy)
         iteration++
     }
@@ -102,11 +90,15 @@ func SimulatedAnnealing(initialCube models.Cube) (State, State, []float64, []flo
     duration := time.Since(startTime)
     formattedDuration := fmt.Sprintf("%.3f", duration.Seconds())
 
-    return current, best, energyHistory, acceptanceProbHistory, formattedDuration, stuckCount, initialEnergy, iteration
+    return State{Cube: copyCube(initialCube), Energy: initialEnergy}, best, energyHistory, acceptanceProbHistory, formattedDuration, stuckCount, initialEnergy, iteration
 }
 
-func generateNeighbor(state State) (State) {
-    neighbor := state
+// Generate a new neighbor by swapping two random elements in the cube
+func generateNeighbor(state State) State {
+    neighbor := State{
+        Cube:   copyCube(state.Cube),
+        Energy: state.Energy,
+    }
     tableIdx1 := rand.Intn(models.NumTables)
     rowIdx1 := rand.Intn(models.Rows)
     colIdx1 := rand.Intn(models.Cols)
@@ -128,11 +120,29 @@ func generateNeighbor(state State) (State) {
     neighbor.Cube.Tables[tableIdx1][rowIdx1][colIdx1] = oldValue2
     neighbor.Cube.Tables[tableIdx2][rowIdx2][colIdx2] = oldValue1
 
+    // Recalculate energy for the new configuration
     neighbor.Energy = models.EvaluateIndividual(neighbor.Cube)
     return neighbor
-    // , tableIdx1, rowIdx1, colIdx1, tableIdx2, rowIdx2, colIdx2, oldValue1, oldValue2
 }
 
+// Helper function to create a deep copy of the cube
+func copyCube(cube models.Cube) models.Cube {
+    newCube := models.Cube{
+        Tables: make([][][]string, len(cube.Tables)),
+    }
+
+    for i := range cube.Tables {
+        newCube.Tables[i] = make([][]string, len(cube.Tables[i]))
+        for j := range cube.Tables[i] {
+            newCube.Tables[i][j] = make([]string, len(cube.Tables[i][j]))
+            copy(newCube.Tables[i][j], cube.Tables[i][j])
+        }
+    }
+
+    return newCube
+}
+
+// Calculate the acceptance probability for simulated annealing
 func acceptanceProbability(currentEnergy, newEnergy, temperature float64) float64 {
     return math.Exp((currentEnergy - newEnergy) / temperature)
 }

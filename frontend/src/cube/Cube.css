@@ -1,0 +1,196 @@
+.cube-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  background-color: #001F3F;
+}
+
+.container {
+  width: 90%;
+  height: 90%;
+  background-color: #072a4d;
+  border: 2px solid #FFF4B7;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.top-container {
+  width: 95%;
+  height: 75%;
+  display: flex;
+  justify-content: center;
+}
+
+.left-container {
+  width: 50%;
+  height: 95%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.right-container {
+  width: 50%;
+  height: 95%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  height: 10%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #FFF4B7;
+}
+
+.cube-box {
+  width: 95%;
+  height: 85%;
+  border: 2px solid #FFF4B7;
+  overflow: hidden;
+}
+
+.bottom-container {
+  width: 93%;
+  height: 15%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #FFF4B7;
+}
+
+.alg-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.alg-button button {
+  color: #FFF4B7;
+  border: 3px solid #FFF4B7;
+  background-color: #ffffff00;
+  border-radius: 10px;
+  padding:  10px 20px 10px 20px;
+  transition: 0.5s ease;
+}
+
+.alg-button button.active {
+  background-color: #FFF4B7;
+  color: #072a4d;
+  cursor: pointer;
+}
+
+.expand-button button {
+  color: #FFF4B7;
+  border: 3px solid #FFF4B7;
+  background-color: #ffffff00;
+  border-radius: 10px;
+  padding:  10px 20px 10px 20px;
+  transition: 0.5s ease;
+}
+
+button:hover {
+  background-color: #FFF4B7;
+  color: #072a4d;
+  cursor: pointer;
+}
+
+.cube-wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 90%;
+  perspective: 1000px;
+}
+
+.cube {
+  width: 240px;
+  height: 240px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.main-cube {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.cube-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  backface-visibility: hidden;
+}
+
+.cube-face-front  { transform: rotateY(0deg) translateZ(120px); }
+.cube-face-back   { transform: rotateY(180deg) translateZ(120px); }
+.cube-face-left   { transform: rotateY(-90deg) translateZ(120px); }
+.cube-face-right  { transform: rotateY(90deg) translateZ(120px); }
+.cube-face-top    { transform: rotateX(90deg) translateZ(120px); }
+.cube-face-bottom { transform: rotateX(-90deg) translateZ(120px); }
+
+.grid-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.grid-row {
+  display: flex;
+}
+
+.grid-cells {
+  width: 46px !important;
+  height: 46px !important;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+
+.json-result {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  max-height: 400px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+.json-result h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+.json-result pre {
+  font-family: monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+  color: #333;
+}
