@@ -1,0 +1,38 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    background-color: #001F3F;
+}
+
+.result-container {
+    height: 90%;
+    width: 90%;
+    background-color: #072a4d;
+    border: 2px solid #FFF4B7;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.result-title {
+    height: 10%;
+    width: 100%;
+    color: #FFF4B7;
+    text-align: center;
+}
+
+.result-content {
+    height: 85%;
+    width: 100%;
+}

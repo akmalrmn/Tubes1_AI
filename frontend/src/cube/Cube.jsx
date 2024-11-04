@@ -5,7 +5,6 @@ import { runSimulatedAnnealing } from '../services/api';
 
 const Cube = () => {
   const [rotation, setRotation] = useState({ x: -30, y: -45 });
-  const [isShrinking, setIsShrinking] = useState(false);
   const [cubeData, setCubeData] = useState(null);
   const cubeRef = useRef(null);
   const touchRef = useRef({ x: 0, y: 0 });
@@ -72,10 +71,9 @@ const Cube = () => {
   const handleExpandClick = () => {
     setRotation({ x: -30, y: -45 });
     setTimeout(() => {
-      setIsShrinking(true);
       setTimeout(() => {
         navigate('/expand');
-      }, 2500);
+      }, 1000);
     }, 0);
   };
 
@@ -114,45 +112,116 @@ const Cube = () => {
 
   const faces = ['front', 'back', 'left', 'right', 'top', 'bottom'];
 
+  const handleAlgClick = (e) => {
+    document.querySelectorAll('.alg-button button').forEach(button => {
+      button.classList.remove('active');
+    });
+    e.target.classList.add('active');
+  };
+
   return (
     <div className='cube-container'>
-      <div
-        className={`cube ${isShrinking ? 'shrink' : ''}`}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-      >
-        <div
-          className='main-cube'
-          ref={cubeRef}
-          style={{ transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)` }}
-        >
-          {cubeData && faces.map((face, faceIdx) => (
-            <div key={faceIdx} className={`cube-face cube-face-${face}`}>
-              <div className='grid-container'>
-                {getFaceData(face)?.map((row, rowIdx) => (
-                  <div key={rowIdx} className='grid-row'>
-                    {Array.isArray(row) ? row.map((cell, cellIdx) => (
-                      <div key={cellIdx} className='grid-cell'>
-                        {cell}
-                      </div>
-                    )) : (
-                      <div key={rowIdx} className='grid-cell'>
-                        {row}
-                      </div>
-                    )}
-                  </div>
-                ))}
+      <div className='container'>
+        <div className='top-container'>
+          <div className='left-container'>
+              <div className='title'>
+                <h1>Initial Cube</h1>
               </div>
-            </div>
-          ))}
+              <div className='cube-box'>
+                <div className='cube-wrapper'>
+                  <div
+                    className={`cube`}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                  >
+                    <div
+                      className='main-cube'
+                      ref={cubeRef}
+                      style={{ transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)` }}
+                    >
+                      {cubeData && faces.map((face, faceIdx) => (
+                        <div key={faceIdx} className={`cube-face cube-face-${face}`}>
+                          <div className='grid-container'>
+                            {getFaceData(face)?.map((row, rowIdx) => (
+                              <div key={rowIdx} className='grid-row'>
+                                {Array.isArray(row) ? row.map((cell, cellIdx) => (
+                                  <div key={cellIdx} className='grid-cells'>
+                                    {cell}
+                                  </div>
+                                )) : (
+                                  <div key={rowIdx} className='grid-cells'>
+                                    {row}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+          <div className='right-container'>
+              <div className='title'>
+                <h1>Final Cube</h1>
+              </div>
+              <div className='cube-box'>
+              <div className='cube-wrapper'>
+                  <div
+                    className={`cube`}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                  >
+                    <div
+                      className='main-cube'
+                      ref={cubeRef}
+                      style={{ transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)` }}
+                    >
+                      {cubeData && faces.map((face, faceIdx) => (
+                        <div key={faceIdx} className={`cube-face cube-face-${face}`}>
+                          <div className='grid-container'>
+                            {getFaceData(face)?.map((row, rowIdx) => (
+                              <div key={rowIdx} className='grid-row'>
+                                {Array.isArray(row) ? row.map((cell, cellIdx) => (
+                                  <div key={cellIdx} className='grid-cells'>
+                                    {cell}
+                                  </div>
+                                )) : (
+                                  <div key={rowIdx} className='grid-cells'>
+                                    {row}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
         </div>
-      </div>
-      <div className='expand-button'>
-        <button onClick={handleExpandClick}>Expand</button>
+        <div className='bottom-container'>
+          <div className='alg-button'>
+            <button id="geneticAlgorithm" onClick={handleAlgClick}>Genetic Algorithm</button>
+            <button id="simulatedAnnealing" onClick={handleAlgClick}>Simulated Annealing</button>
+            <button id="steepestAscent" onClick={handleAlgClick}>Steepest Ascent</button>
+          </div>
+          <div className='expand-button'>
+            <button onClick={handleExpandClick}>Expand</button>
+          </div>
+        </div>
       </div>
     </div>
   );
