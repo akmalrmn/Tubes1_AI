@@ -60,7 +60,7 @@ const Cube = () => {
     if (!isDragging.current) return;
 
     const deltaX = e.clientX - touchRef.current.x;
-    const deltaY = e.clientY - e.clientY;
+    const deltaY = e.clientY - touchRef.current.y;
     touchRef.current = {
       x: e.clientX,
       y: e.clientY,
@@ -87,34 +87,28 @@ const Cube = () => {
 
   const getFaceData = (cubeData, face) => {
     if (!cubeData) return null;
-  
+
     const size = cubeData[0][0].length;
-  
+
     switch (face) {
-      case 'front':
+      case "front":
         return cubeData[0];
-  
-      case 'back':
-        return cubeData[4].map((row, rowIndex) => 
+      case "back":
+        return cubeData[4].map((row, rowIndex) =>
           row.map((_, colIndex) => cubeData[4][rowIndex][colIndex]).reverse()
         );
-  
-      case 'right':
-        return cubeData[0].map((_, colIndex) => 
+      case "right":
+        return cubeData[0].map((_, colIndex) =>
           cubeData.map((table) => table[colIndex][size - 1])
         );
-  
-      case 'left':
-        return cubeData[0].map((_, colIndex) => 
-          cubeData.map((table) => table[colIndex][0])
+      case "left":
+        return cubeData[0].map((_, colIndex) =>
+          cubeData.map((table) => table[colIndex][0]).reverse()
         );
-  
-      case 'top':
+      case "top":
         return cubeData.map((table) => table[0]).reverse();
-  
-      case 'bottom':
+      case "bottom":
         return cubeData.map((table) => table[size - 1]);
-  
       default:
         return null;
     }
@@ -282,15 +276,17 @@ const Cube = () => {
             <button onClick={handleExpandClick}>Expand</button>
           </div>
         </div>
-      </div>
         {algorithmData && (
           <div className="algorithm-data">
             <h2>Algorithm Data</h2>
             <p>Duration: {algorithmData.duration}</p>
             <p>Total Iterations: {algorithmData.totalIterations}</p>
             <p>Final Objective Value: {algorithmData.finalObjectiveVal}</p>
+            <p>Stuck Count: {algorithmData.stuckCount}</p>
+            <p>Initial Energy: {algorithmData.initialEnergy}</p>
           </div>
         )}
+      </div>
     </div>
   );
 };
