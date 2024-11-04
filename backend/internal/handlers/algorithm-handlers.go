@@ -13,9 +13,11 @@ import (
     "gonum.org/v1/plot/vg"
     "os"
     "path/filepath"
+    "strings"
 )
 
 func plotHistory(data []float64, folder, filename, xlabel, ylabel string) (string, error) {
+    folder = "src/" + strings.ReplaceAll(folder, "\\", "/")
     if err := os.MkdirAll(folder, os.ModePerm); err != nil {
         return "", err
     }

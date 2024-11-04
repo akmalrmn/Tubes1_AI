@@ -145,6 +145,20 @@ const Cube = () => {
         setAlgorithmData(data);
       }
     }
+
+    if (data) {
+      // Update paths to be in the correct format
+      if (data.energyPlot) {
+        data.energyPlot = data.energyPlot.replace("plots\\", "src/plots/");
+      }
+      if (data.acceptanceProbPlot) {
+        data.acceptanceProbPlot = data.acceptanceProbPlot.replace("plots\\", "src/plots/");
+      }
+      if (data.objectivePlot) {
+        data.objectivePlot = data.objectivePlot.replace("plots\\", "src/plots/");
+      }
+      setAlgorithmData(data);
+    }
   };
 
   return (
@@ -284,6 +298,33 @@ const Cube = () => {
             <p>Final Objective Value: {algorithmData.finalObjectiveVal}</p>
             <p>Stuck Count: {algorithmData.stuckCount}</p>
             <p>Initial Energy: {algorithmData.initialEnergy}</p>
+            {algorithmData.energyPlot && (
+              <div>
+                <h3>Energy Plot</h3>
+                <img
+                  src={`${algorithmData.energyPlot}`}
+                  alt="Energy Plot"
+                />
+              </div>
+            )}
+            {algorithmData.acceptanceProbPlot && (
+              <div>
+                <h3>Acceptance Probability Plot</h3>
+                <img
+                  src={`${algorithmData.acceptanceProbPlot}`}
+                  alt="Acceptance Probability Plot"
+                />
+              </div>
+            )}
+            {algorithmData.objectivePlot && (
+              <div>
+                <h3>Objective Plot</h3>
+                <img
+                  src={`${algorithmData.objectivePlot}`}
+                  alt="Objective Plot"
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
