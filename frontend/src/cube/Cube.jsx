@@ -179,12 +179,12 @@ const Cube = () => {
                                 <div key={rowIdx} className="grid-row">
                                   {Array.isArray(row) ? (
                                     row.map((cell, cellIdx) => (
-                                      <div key={cellIdx} className="grid-cell">
+                                      <div key={cellIdx} className="grid-cells">
                                         {cell}
                                       </div>
                                     ))
                                   ) : (
-                                    <div key={rowIdx} className="grid-cell">
+                                    <div key={rowIdx} className="grid-cells">
                                       {row}
                                     </div>
                                   )}
@@ -233,12 +233,12 @@ const Cube = () => {
                                 <div key={rowIdx} className="grid-row">
                                   {Array.isArray(row) ? (
                                     row.map((cell, cellIdx) => (
-                                      <div key={cellIdx} className="grid-cell">
+                                      <div key={cellIdx} className="grid-cells">
                                         {cell}
                                       </div>
                                     ))
                                   ) : (
-                                    <div key={rowIdx} className="grid-cell">
+                                    <div key={rowIdx} className="grid-cells">
                                       {row}
                                     </div>
                                   )}
