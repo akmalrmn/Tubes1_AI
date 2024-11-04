@@ -24,5 +24,5 @@ go run cmd/server/main.go
 ## Developers
 1. 13522139 Attara Majesta Ayub
 2. 13522140 Yasmin Farisah Salma
-3. 13522152 Jason Fernando
+3. 13522156 Jason Fernando
 4. 13522161 Mohammad Akmal Ramadah
