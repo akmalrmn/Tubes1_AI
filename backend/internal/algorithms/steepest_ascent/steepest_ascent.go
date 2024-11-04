@@ -1,5 +1,5 @@
-// package main
-package steepest_ascent
+package main
+// package steepest_ascent
 
 import (
 	"fmt"
@@ -33,6 +33,14 @@ func SteepestAscent(maxIterations int, targetSum int) (State, State, time.Durati
 			for _, message := range swapMessages {
 				fmt.Println("   " + message)
 			}
+
+			fmt.Println("Current Cube State:")
+            for _, table := range current.Cube.Tables {
+                for _, row := range table {
+                    fmt.Println(row)
+                }
+                fmt.Println()
+            }
 		} else {
 			break
 		}
@@ -117,55 +125,55 @@ func flattenCube(cube models.Cube) []int {
 	return flattened
 }
 
-// func main() {
-// 	maxIterations := 1000
-// 	targetSum := 25
-// 	initialState, finalState, duration := SteepestAscent(maxIterations, targetSum)
+func main() {
+	maxIterations := 1000
+	targetSum := 25
+	initialState, finalState, duration := SteepestAscent(maxIterations, targetSum)
 
-// 	fmt.Println("\nInitial Cube State:")
-// 	for _, table := range initialState.Cube.Tables {
-// 		for _, row := range table {
-// 			fmt.Println(row)
-// 		}
-// 		fmt.Println()
-// 	}
+	fmt.Println("\nInitial Cube State:")
+	for _, table := range initialState.Cube.Tables {
+		for _, row := range table {
+			fmt.Println(row)
+		}
+		fmt.Println()
+	}
 
-// 	fmt.Println("Final Cube State:")
-// 	for _, table := range finalState.Cube.Tables {
-// 		for _, row := range table {
-// 			fmt.Println(row)
-// 		}
-// 		fmt.Println()
-// 	}
+	fmt.Println("Final Cube State:")
+	for _, table := range finalState.Cube.Tables {
+		for _, row := range table {
+			fmt.Println(row)
+		}
+		fmt.Println()
+	}
 
-// 	fmt.Println("Final Sums:")
+	fmt.Println("Final Sums:")
 
-// 	columnSums := models.SumColumns(finalState.Cube.Tables)
-// 	rowSums := models.SumRows(finalState.Cube.Tables)
-// 	poleSums := models.SumPoles(finalState.Cube.Tables)
-// 	faceDiagonalSums := models.SumFaceDiagonal(finalState.Cube.Tables)
-// 	spaceDiagonalSums := models.SumSpaceDiagonal(finalState.Cube.Tables)
+	columnSums := models.SumColumns(finalState.Cube.Tables)
+	rowSums := models.SumRows(finalState.Cube.Tables)
+	poleSums := models.SumPoles(finalState.Cube.Tables)
+	faceDiagonalSums := models.SumFaceDiagonal(finalState.Cube.Tables)
+	spaceDiagonalSums := models.SumSpaceDiagonal(finalState.Cube.Tables)
 
-// 	fmt.Printf("Column Sums: %v\n", columnSums)
-// 	fmt.Printf("Row Sums: %v\n", rowSums)
-// 	fmt.Printf("Pole Sums: %v\n", poleSums)
-// 	fmt.Printf("Face Diagonal Sums: %v\n", faceDiagonalSums)
-// 	fmt.Printf("Space Diagonal Sums: %v\n", spaceDiagonalSums)
+	fmt.Printf("Column Sums: %v\n", columnSums)
+	fmt.Printf("Row Sums: %v\n", rowSums)
+	fmt.Printf("Pole Sums: %v\n", poleSums)
+	fmt.Printf("Face Diagonal Sums: %v\n", faceDiagonalSums)
+	fmt.Printf("Space Diagonal Sums: %v\n", spaceDiagonalSums)
 
-// 	allSumsMatch := true
-// 	for _, sum := range append(append(append(append(columnSums, rowSums...), poleSums...), faceDiagonalSums...), spaceDiagonalSums...) {
-// 		if sum != targetSum {
-// 			allSumsMatch = false
-// 			break
-// 		}
-// 	}
+	allSumsMatch := true
+	for _, sum := range append(append(append(append(columnSums, rowSums...), poleSums...), faceDiagonalSums...), spaceDiagonalSums...) {
+		if sum != targetSum {
+			allSumsMatch = false
+			break
+		}
+	}
 
-// 	if allSumsMatch {
-// 		fmt.Println("\nThe final cube configuration is correct and meets the magic number requirements.")
-// 	} else {
-// 		fmt.Println("\nThe final cube configuration does not fully meet the magic number requirements.\nReached maximum iterations or a local optimum.")
-// 	}
+	if allSumsMatch {
+		fmt.Println("\nThe final cube configuration is correct and meets the magic number requirements.")
+	} else {
+		fmt.Println("\nThe final cube configuration does not fully meet the magic number requirements.\nReached maximum iterations or a local optimum.")
+	}
 
-// 	fmt.Printf("\nFinal Objective Function Value: %.0f\n", finalState.ObjectiveValue)
-// 	fmt.Printf("Search Duration: %v\n", duration)
-// }
+	fmt.Printf("\nFinal Objective Function Value: %.0f\n", finalState.ObjectiveValue)
+	fmt.Printf("Search Duration: %v\n", duration)
+}
