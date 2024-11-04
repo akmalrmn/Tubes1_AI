@@ -87,20 +87,22 @@ const Cube = () => {
         return cubeData[0];
       
       case 'back':
-        return cubeData[4];
+        return cubeData[4].map((row, rowIndex) => 
+          row.map((_, colIndex) => cubeData[4][rowIndex][colIndex]).reverse()
+        );
       
       case 'right':
-        return cubeData.map(table => 
-          table.map(row => row[size - 1])
+        return cubeData[0].map((_, colIndex) => 
+          cubeData.map((table) => table[colIndex][size - 1])
         );
       
       case 'left':
-        return cubeData.map(table => 
-          table.map(row => row[0])
+        return cubeData[0].map((_, colIndex) => 
+          cubeData.map((table) => table[colIndex][0]).reverse()
         );
       
       case 'top':
-        return cubeData.map(table => table[0]);
+        return cubeData.map(table => table[0]).reverse();
       
       case 'bottom':
         return cubeData.map(table => table[size - 1]);
