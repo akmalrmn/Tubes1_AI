@@ -115,20 +115,25 @@ const Cube = () => {
     });
     e.target.classList.add("active");
 
-    
     let data;
     if (e.target.id === "geneticAlgorithm") {
       data = await runGeneticAlgorithm(50, 100);
+      if (data) {
+        setInitialCubeData(data.highestIndividual.Tables);
+        setFinalCubeData(data.lowestIndividual.Tables);
+      }
     } else if (e.target.id === "simulatedAnnealing") {
       data = await runSimulatedAnnealing();
+      if (data) {
+        setInitialCubeData(data.initialState.Cube.Tables);
+        setFinalCubeData(data.finalState.Cube.Tables);
+      }
     } else if (e.target.id === "steepestAscent") {
       data = await runSteepestAscent(1000, 25);
-    }
-
-    // Update cube data if data is successfully fetched
-    if (data) {
-      setInitialCubeData(data.initialState.Cube.Tables);
-      setFinalCubeData(data.finalState.Cube.Tables);
+      if (data) {
+        setInitialCubeData(data.initialState.Cube.Tables);
+        setFinalCubeData(data.finalState.Cube.Tables);
+      }
     }
   };
 
