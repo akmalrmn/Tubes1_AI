@@ -12,7 +12,7 @@ const Result = ({ algorithmData }) => {
           {algorithmData ? (
             <>
               <div className='duration'>
-                <p>Duration: {algorithmData.duration}</p>
+                <p>Duration: {algorithmData.duration} s</p>
               </div>
               <div className='objective'>
                 <p>Objective: {algorithmData.finalObjectiveVal}</p>
