@@ -11,6 +11,7 @@ const Cube = () => {
   const [rotation, setRotation] = useState({ x: -30, y: -45 });
   const [initialCubeData, setInitialCubeData] = useState(null);
   const [finalCubeData, setFinalCubeData] = useState(null);
+  const [algorithmData, setAlgorithmData] = useState(null);
   const cubeRef = useRef(null);
   const touchRef = useRef({ x: 0, y: 0 });
   const isDragging = useRef(false);
@@ -21,6 +22,7 @@ const Cube = () => {
       const data = await runSimulatedAnnealing();
       setInitialCubeData(data.initialState.Cube.Tables);
       setFinalCubeData(data.finalState.Cube.Tables);
+      setAlgorithmData(data);
     };
     fetchData();
   }, []);
@@ -83,36 +85,30 @@ const Cube = () => {
     }, 0);
   };
 
-    const getFaceData = (cubeData, face) => {
+  const getFaceData = (cubeData, face) => {
     if (!cubeData) return null;
-  
+
     const size = cubeData[0][0].length;
-  
+
     switch (face) {
-      case 'front':
+      case "front":
         return cubeData[0];
-  
-      case 'back':
-        return cubeData[4].map((row, rowIndex) => 
-          row.map((_, colIndex) => cubeData[4][colIndex][rowIndex])
+      case "back":
+        return cubeData[4].map((row, rowIndex) =>
+          row.map((_, colIndex) => cubeData[4][rowIndex][colIndex]).reverse()
         );
-  
-      case 'right':
-        return cubeData[0].map((_, colIndex) => 
+      case "right":
+        return cubeData[0].map((_, colIndex) =>
           cubeData.map((table) => table[colIndex][size - 1])
         );
-  
-      case 'left':
-        return cubeData[0].map((_, colIndex) => 
-          cubeData.map((table) => table[colIndex][0])
+      case "left":
+        return cubeData[0].map((_, colIndex) =>
+          cubeData.map((table) => table[colIndex][0]).reverse()
         );
-  
-      case 'top':
+      case "top":
         return cubeData.map((table) => table[0]).reverse();
-  
-      case 'bottom':
+      case "bottom":
         return cubeData.map((table) => table[size - 1]);
-  
       default:
         return null;
     }
@@ -121,7 +117,6 @@ const Cube = () => {
   const faces = ["front", "back", "left", "right", "top", "bottom"];
 
   const handleAlgClick = async (e) => {
-    // Remove 'active' class from all buttons and add to clicked button
     document.querySelectorAll(".alg-button button").forEach((button) => {
       button.classList.remove("active");
     });
@@ -133,18 +128,21 @@ const Cube = () => {
       if (data) {
         setInitialCubeData(data.highestIndividual.Tables);
         setFinalCubeData(data.lowestIndividual.Tables);
+        setAlgorithmData(data);
       }
     } else if (e.target.id === "simulatedAnnealing") {
       data = await runSimulatedAnnealing();
       if (data) {
         setInitialCubeData(data.initialState.Cube.Tables);
         setFinalCubeData(data.finalState.Cube.Tables);
+        setAlgorithmData(data);
       }
     } else if (e.target.id === "steepestAscent") {
       data = await runSteepestAscent(1000, 25);
       if (data) {
         setInitialCubeData(data.initialState.Cube.Tables);
         setFinalCubeData(data.finalState.Cube.Tables);
+        setAlgorithmData(data);
       }
     }
   };
@@ -187,12 +185,12 @@ const Cube = () => {
                                 <div key={rowIdx} className="grid-row">
                                   {Array.isArray(row) ? (
                                     row.map((cell, cellIdx) => (
-                                      <div key={cellIdx} className="grid-cells">
+                                      <div key={cellIdx} className="grid-cell">
                                         {cell}
                                       </div>
                                     ))
                                   ) : (
-                                    <div key={rowIdx} className="grid-cells">
+                                    <div key={rowIdx} className="grid-cell">
                                       {row}
                                     </div>
                                   )}
@@ -241,12 +239,12 @@ const Cube = () => {
                                 <div key={rowIdx} className="grid-row">
                                   {Array.isArray(row) ? (
                                     row.map((cell, cellIdx) => (
-                                      <div key={cellIdx} className="grid-cells">
+                                      <div key={cellIdx} className="grid-cell">
                                         {cell}
                                       </div>
                                     ))
                                   ) : (
-                                    <div key={rowIdx} className="grid-cells">
+                                    <div key={rowIdx} className="grid-cell">
                                       {row}
                                     </div>
                                   )}
@@ -278,6 +276,16 @@ const Cube = () => {
             <button onClick={handleExpandClick}>Expand</button>
           </div>
         </div>
+        {algorithmData && (
+          <div className="algorithm-data">
+            <h2>Algorithm Data</h2>
+            <p>Duration: {algorithmData.duration}</p>
+            <p>Total Iterations: {algorithmData.totalIterations}</p>
+            <p>Final Objective Value: {algorithmData.finalObjectiveVal}</p>
+            <p>Stuck Count: {algorithmData.stuckCount}</p>
+            <p>Initial Energy: {algorithmData.initialEnergy}</p>
+          </div>
+        )}
       </div>
     </div>
   );
