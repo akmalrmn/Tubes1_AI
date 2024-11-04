@@ -7,10 +7,11 @@ import {
   runSteepestAscent,
 } from "../services/api";
 
-const Cube = ({ setAlgorithmData }) => {
+const Cube = () => {
   const [rotation, setRotation] = useState({ x: -30, y: -45 });
   const [initialCubeData, setInitialCubeData] = useState(null);
   const [finalCubeData, setFinalCubeData] = useState(null);
+  const [algorithmData, setAlgorithmData] = useState(null);
   const cubeRef = useRef(null);
   const touchRef = useRef({ x: 0, y: 0 });
   const isDragging = useRef(false);
@@ -24,7 +25,7 @@ const Cube = ({ setAlgorithmData }) => {
       setAlgorithmData(data);
     };
     fetchData();
-  }, [setAlgorithmData]);
+  }, []);
 
   const handleTouchStart = (e) => {
     touchRef.current = {
@@ -86,34 +87,28 @@ const Cube = ({ setAlgorithmData }) => {
 
   const getFaceData = (cubeData, face) => {
     if (!cubeData) return null;
-  
+
     const size = cubeData[0][0].length;
-  
+
     switch (face) {
-      case 'front':
+      case "front":
         return cubeData[0];
-  
-      case 'back':
-        return cubeData[4].map((row, rowIndex) => 
+      case "back":
+        return cubeData[4].map((row, rowIndex) =>
           row.map((_, colIndex) => cubeData[4][rowIndex][colIndex]).reverse()
         );
-  
-      case 'right':
-        return cubeData[0].map((_, colIndex) => 
+      case "right":
+        return cubeData[0].map((_, colIndex) =>
           cubeData.map((table) => table[colIndex][size - 1])
         );
-  
-      case 'left':
-        return cubeData[0].map((_, colIndex) => 
+      case "left":
+        return cubeData[0].map((_, colIndex) =>
           cubeData.map((table) => table[colIndex][0]).reverse()
         );
-  
-      case 'top':
+      case "top":
         return cubeData.map((table) => table[0]).reverse();
-  
-      case 'bottom':
+      case "bottom":
         return cubeData.map((table) => table[size - 1]);
-  
       default:
         return null;
     }
@@ -204,12 +199,12 @@ const Cube = ({ setAlgorithmData }) => {
                                 <div key={rowIdx} className="grid-row">
                                   {Array.isArray(row) ? (
                                     row.map((cell, cellIdx) => (
-                                      <div key={cellIdx} className="grid-cells">
+                                      <div key={cellIdx} className="grid-cell">
                                         {cell}
                                       </div>
                                     ))
                                   ) : (
-                                    <div key={rowIdx} className="grid-cells">
+                                    <div key={rowIdx} className="grid-cell">
                                       {row}
                                     </div>
                                   )}
@@ -258,12 +253,12 @@ const Cube = ({ setAlgorithmData }) => {
                                 <div key={rowIdx} className="grid-row">
                                   {Array.isArray(row) ? (
                                     row.map((cell, cellIdx) => (
-                                      <div key={cellIdx} className="grid-cells">
+                                      <div key={cellIdx} className="grid-cell">
                                         {cell}
                                       </div>
                                     ))
                                   ) : (
-                                    <div key={rowIdx} className="grid-cells">
+                                    <div key={rowIdx} className="grid-cell">
                                       {row}
                                     </div>
                                   )}
