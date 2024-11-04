@@ -7,11 +7,10 @@ import {
   runSteepestAscent,
 } from "../services/api";
 
-const Cube = () => {
+const Cube = ({ setAlgorithmData }) => {
   const [rotation, setRotation] = useState({ x: -30, y: -45 });
   const [initialCubeData, setInitialCubeData] = useState(null);
   const [finalCubeData, setFinalCubeData] = useState(null);
-  const [algorithmData, setAlgorithmData] = useState(null);
   const cubeRef = useRef(null);
   const touchRef = useRef({ x: 0, y: 0 });
   const isDragging = useRef(false);
@@ -25,7 +24,7 @@ const Cube = () => {
       setAlgorithmData(data);
     };
     fetchData();
-  }, []);
+  }, [setAlgorithmData]);
 
   const handleTouchStart = (e) => {
     touchRef.current = {
@@ -87,28 +86,34 @@ const Cube = () => {
 
   const getFaceData = (cubeData, face) => {
     if (!cubeData) return null;
-
+  
     const size = cubeData[0][0].length;
-
+  
     switch (face) {
-      case "front":
+      case 'front':
         return cubeData[0];
-      case "back":
-        return cubeData[4].map((row, rowIndex) =>
+  
+      case 'back':
+        return cubeData[4].map((row, rowIndex) => 
           row.map((_, colIndex) => cubeData[4][rowIndex][colIndex]).reverse()
         );
-      case "right":
-        return cubeData[0].map((_, colIndex) =>
+  
+      case 'right':
+        return cubeData[0].map((_, colIndex) => 
           cubeData.map((table) => table[colIndex][size - 1])
         );
-      case "left":
-        return cubeData[0].map((_, colIndex) =>
+  
+      case 'left':
+        return cubeData[0].map((_, colIndex) => 
           cubeData.map((table) => table[colIndex][0]).reverse()
         );
-      case "top":
+  
+      case 'top':
         return cubeData.map((table) => table[0]).reverse();
-      case "bottom":
+  
+      case 'bottom':
         return cubeData.map((table) => table[size - 1]);
+  
       default:
         return null;
     }
@@ -276,16 +281,6 @@ const Cube = () => {
             <button onClick={handleExpandClick}>Expand</button>
           </div>
         </div>
-        {algorithmData && (
-          <div className="algorithm-data">
-            <h2>Algorithm Data</h2>
-            <p>Duration: {algorithmData.duration}</p>
-            <p>Total Iterations: {algorithmData.totalIterations}</p>
-            <p>Final Objective Value: {algorithmData.finalObjectiveVal}</p>
-            <p>Stuck Count: {algorithmData.stuckCount}</p>
-            <p>Initial Energy: {algorithmData.initialEnergy}</p>
-          </div>
-        )}
       </div>
     </div>
   );
