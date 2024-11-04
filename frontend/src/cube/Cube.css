@@ -173,3 +173,24 @@ button:hover {
   align-items: center;
   user-select: none;
 }
+
+.json-result {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  max-height: 400px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+.json-result h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+.json-result pre {
+  font-family: monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+  color: #333;
+}

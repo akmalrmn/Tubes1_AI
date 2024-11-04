@@ -87,22 +87,34 @@ const Cube = () => {
 
   const getFaceData = (cubeData, face) => {
     if (!cubeData) return null;
-
-    const size = cubeData[0].length;
-
+  
+    const size = cubeData[0][0].length;
+  
     switch (face) {
-      case "front":
+      case 'front':
         return cubeData[0];
-      case "back":
-        return cubeData[4];
-      case "left":
-        return cubeData.map((row) => row[0]);
-      case "right":
-        return cubeData.map((row) => row[size - 1]);
-      case "top":
-        return cubeData.map((row, idx) => cubeData[idx][0]);
-      case "bottom":
-        return cubeData.map((row, idx) => cubeData[idx][size - 1]);
+  
+      case 'back':
+        return cubeData[4].map((row, rowIndex) => 
+          row.map((_, colIndex) => cubeData[4][rowIndex][colIndex]).reverse()
+        );
+  
+      case 'right':
+        return cubeData[0].map((_, colIndex) => 
+          cubeData.map((table) => table[colIndex][size - 1])
+        );
+  
+      case 'left':
+        return cubeData[0].map((_, colIndex) => 
+          cubeData.map((table) => table[colIndex][0])
+        );
+  
+      case 'top':
+        return cubeData.map((table) => table[0]).reverse();
+  
+      case 'bottom':
+        return cubeData.map((table) => table[size - 1]);
+  
       default:
         return null;
     }
@@ -270,6 +282,7 @@ const Cube = () => {
             <button onClick={handleExpandClick}>Expand</button>
           </div>
         </div>
+      </div>
         {algorithmData && (
           <div className="algorithm-data">
             <h2>Algorithm Data</h2>
@@ -278,7 +291,6 @@ const Cube = () => {
             <p>Final Objective Value: {algorithmData.finalObjectiveVal}</p>
           </div>
         )}
-      </div>
     </div>
   );
 };
