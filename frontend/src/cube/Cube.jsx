@@ -83,24 +83,36 @@ const Cube = () => {
     }, 0);
   };
 
-  const getFaceData = (cubeData, face) => {
+    const getFaceData = (cubeData, face) => {
     if (!cubeData) return null;
-
-    const size = cubeData[0].length;
-
+  
+    const size = cubeData[0][0].length;
+  
     switch (face) {
-      case "front":
+      case 'front':
         return cubeData[0];
-      case "back":
-        return cubeData[4];
-      case "left":
-        return cubeData.map((row) => row[0]);
-      case "right":
-        return cubeData.map((row) => row[size - 1]);
-      case "top":
-        return cubeData.map((row, idx) => cubeData[idx][0]);
-      case "bottom":
-        return cubeData.map((row, idx) => cubeData[idx][size - 1]);
+  
+      case 'back':
+        return cubeData[4].map((row, rowIndex) => 
+          row.map((_, colIndex) => cubeData[4][colIndex][rowIndex])
+        );
+  
+      case 'right':
+        return cubeData[0].map((_, colIndex) => 
+          cubeData.map((table) => table[colIndex][size - 1])
+        );
+  
+      case 'left':
+        return cubeData[0].map((_, colIndex) => 
+          cubeData.map((table) => table[colIndex][0])
+        );
+  
+      case 'top':
+        return cubeData.map((table) => table[0]).reverse();
+  
+      case 'bottom':
+        return cubeData.map((table) => table[size - 1]);
+  
       default:
         return null;
     }
@@ -175,12 +187,12 @@ const Cube = () => {
                                 <div key={rowIdx} className="grid-row">
                                   {Array.isArray(row) ? (
                                     row.map((cell, cellIdx) => (
-                                      <div key={cellIdx} className="grid-cell">
+                                      <div key={cellIdx} className="grid-cells">
                                         {cell}
                                       </div>
                                     ))
                                   ) : (
-                                    <div key={rowIdx} className="grid-cell">
+                                    <div key={rowIdx} className="grid-cells">
                                       {row}
                                     </div>
                                   )}
@@ -229,12 +241,12 @@ const Cube = () => {
                                 <div key={rowIdx} className="grid-row">
                                   {Array.isArray(row) ? (
                                     row.map((cell, cellIdx) => (
-                                      <div key={cellIdx} className="grid-cell">
+                                      <div key={cellIdx} className="grid-cells">
                                         {cell}
                                       </div>
                                     ))
                                   ) : (
-                                    <div key={rowIdx} className="grid-cell">
+                                    <div key={rowIdx} className="grid-cells">
                                       {row}
                                     </div>
                                   )}
