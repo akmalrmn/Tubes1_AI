@@ -39,12 +39,13 @@ func plotHistory(data []float64, folder, filename, xlabel, ylabel string) (strin
     }
     p.Add(line)
 
-    if err := p.Save(4*vg.Inch, 4*vg.Inch, filePath); err != nil {
+    if err := p.Save(10*vg.Inch, 4*vg.Inch, filePath); err != nil {
         return "", err // Return an error instead of panicking
     }
 
-    return filePath, nil // Return the filename and nil for no error
+    return filePath, nil // Return the filePath and nil for no error
 }
+
 func printCube(cube models.Cube) {
     for tableIdx, table := range cube.Tables {
         fmt.Printf("Table %d:\n", tableIdx+1)
